@@ -1,0 +1,7 @@
+﻿  files.cpp
+c:\users\guy bronshtein\desktop\תכנות מוכוון עצמים ושפת c++\ex1\project1\project1\files.cpp(26): error C2065: 'bo': undeclared identifier
+c:\users\guy bronshtein\desktop\תכנות מוכוון עצמים ושפת c++\ex1\project1\project1\files.cpp(26): error C2146: syntax error: missing ';' before identifier 'ard'
+c:\users\guy bronshtein\desktop\תכנות מוכוון עצמים ושפת c++\ex1\project1\project1\files.cpp(26): error C2065: 'ard': undeclared identifier
+  main.cpp
+c:\users\guy bronshtein\desktop\תכנות מוכוון עצמים ושפת c++\ex1\project1\project1\main.cpp(8): error C2143: syntax error: missing ';' before '}'
+  Generating Code...
