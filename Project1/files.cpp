@@ -1,70 +1,107 @@
 #include "files.h"
 
 using namespace std;
-char** Player::readFromFile(string fileName)
+void Player::readFromFile()
 {
 	//bool fEOF = false;
 	int illegalFile = 0;
 	int numOfPieces = 0;
-	char board[M][N];
-	int counterPieces[typePieces] = {0,0,0,0,0,0};//TODO: initilize outside/
 	string tmpRead;
 	ifstream inFile(fileName);
-	while (illegalFile)
+	while (illegalFile == 0)
 	{
 		getline(inFile, tmpRead);
-		initBoard(tmpRead, board, illegalFile, counterPieces);
-		if (inFile.eof())
+		initBoard(tmpRead, illegalFile);
+		if (inFile.eof() && illegalFile != 0)//Checking if we got any other error from initboard function.
 		{
-			illegalFile= 1; //reach to end of file
+			illegalFile= 1; // ERROR - reach to end of file
 		}
 
 		numOfPieces++;
 
 	}
 	//TODO: create function that checking if there is flag- else return reasun
-	return bo ard;
+	
 }
-void Player::initBoard(string line, char board[N][M], int& illegalFile, int* counterPieces)
+void Player::initBoard(string line, int& illegalFile)
 {
 	istringstream tempCh(line);
 	int xLocation;
 	int yLocation;
 	char pieceType;
 	string temp;
-	//TODO: change to get from one long string without spaces.
+	//TODO: change to get from one long string without spaces. -- Leave as it is for now.
 	getline(tempCh, temp, ' ');
 	pieceType = temp[0];
+	if (checkNumOfPieces(illegalFile, pieceType))
+		return;
 	getline(tempCh, temp, ' ');
 	xLocation = stoi(temp);
 	getline(tempCh, temp, ' ');
 	yLocation = stoi(temp);
-	//counterPieces[pieceType +1] = TODO: need to figure out how to count the pieces.
-
-
-	//ToDo: create funcrion to make sure there arn't extra pices from the same type
 
 	//TODO chack if x and y is between 1-10- else return reasun
-	if (board[xLocation][yLocation] != NULL)
+	if (board[xLocation-1][yLocation-1] != '-')
 	{
 		illegalFile = 2;//Bad Positioning input file for player <player> - line <bad line number>
 		//------- Need to add param for the position of the error
 
 		return;
 	}
-	board[xLocation][yLocation] = pieceType;
+	board[xLocation-1][yLocation-1] = pieceType;
 		//TODO: string check to make sure all the chars are valid + add joker
 		
 	
 }
 
-void Player::initilizeBoard(char board[N][M])
+
+
+Player::Player(string vFileName)
 {
-	for (int i = 0; i < N; i++)
+	int i, j;
+	for (i = 0; i < N; i++)
 	{
-		for (int j = 0; j < M; j++)
+		for (j = 0; j < M; j++)
 		{
-			board[N][M] = NULL;
+			board[i][j] = '-';
 		}
 	}
+	for( i = 0;i<counter;i++)
+	{
+		nPieces[i] = 0;
+	}
+	fileName = vFileName;
+}
+
+bool Player::checkNumOfPieces(int& illegalFile,char type)
+{
+	switch (type)
+	{
+	case 'R':
+		nPieces[R] += 1;
+		break;
+	case 'P':
+		nPieces[P] += 1;
+		break;
+	case 'B':
+		nPieces[B] += 1;
+		break;
+	case 'J':
+		nPieces[J] += 1;
+		break;
+	case 'F':
+		nPieces[F] += 1;
+		break;
+	case 'S':
+		nPieces[S] += 1;
+		break;
+	}
+	if (nPieces[P] > MAX_PAPER || nPieces[R] > MAX_ROCK || nPieces[B] > MAX_BOMB || nPieces[J] > MAX_JOKER ||
+		nPieces[S] > MAX_SCISSORS || nPieces[F] > MAX_FLAG)
+	{
+		illegalFile = 3;
+		error = "Too many pieces from the same type";
+		return true;
+	}
+	return false;
 }

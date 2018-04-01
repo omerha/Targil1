@@ -1,25 +1,35 @@
 #pragma once
 #define M 10
 #define N 10
-#define typePieces 6
-#include<string.h>
+#include <string>
 #include <fstream>
 #include <sstream>
+#define MAX_ROCK 2
+#define MAX_PAPER 5
+#define MAX_SCISSORS 1
+#define MAX_BOMB 2
+#define MAX_JOKER 2
+#define MAX_FLAG 1
 enum Pieces
 {
-	R = 0,
-	P = 1,
-	S = 2,
-	B = 3,
-	J = 4,
-	F = 5
+	R,
+	P,
+	B,
+	J,
+	F,
+	S,
+	counter
 };
 
 class Player
 {
-
+	int nPieces[counter];
+	char board[N][M];
+	std::string fileName;
+	std::string error;
 public:
-	char** readFromFile(std::string fileName);
-	void initBoard(std::string line, char board[N][M], int& illegalFile, int* counterPieces);
-	void initilizeBoard(char board[N][M]);
+	void readFromFile();
+	void initBoard(std::string line, int& illegalFile);
+	bool checkNumOfPieces(int& illegalFile,char type);
+	Player(std::string vFileName);
 };

@@ -1,8 +1,8 @@
 #include "files.h"
 
 
-int main()
-{
-	Player player1;
-	player1.readFromFile("test.txt")
+int main(int argc,char* argv[])
+ {
+	Player player1("test.txt");
+	player1.readFromFile();
 }
