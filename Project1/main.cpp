@@ -1,4 +1,9 @@
-#include "files.h"
+#include <windows.h>
+#include <iostream>
+using namespace std;
+
+#include "TheGame.h"
+#include "Player.h"
 
 
 int main(int argc,char* argv[])

@@ -1,107 +1,117 @@
 #include "Player.h"
 
 using namespace std;
+
+void Player::setBoard()
+{
+	int i;
+	int xCoordinate, yCoordinate;
+	char type;
+
+	for (i = 0; i < K; i++)
+	{
+		xCoordinate = this->playerPieces[i].x;
+		yCoordinate = this->playerPieces[i].y;
+		type = xCoordinate = this->playerPieces[i].pieceType;
+		if (this->playerBoard[xCoordinate - 1][yCoordinate - 1] != '-')
+		{
+			this->status = badPosition;
+			return;
+		}
+		else this->playerBoard[xCoordinate-1][yCoordinate-1] = type;
+	}
+	
+}
+
+
 void Player::readFromFile()
 {
-	//bool fEOF = false;
-	int illegalFile = 0;
+	bool illegalFile = false;
 	int numOfPieces = 0;
 	string tmpRead;
-	ifstream inFile(fileName);
-	while (illegalFile == 0)
+	ifstream inFile(this->fileName);
+	Piece pieceTmp;
+	while (!inFile.eof()&& ! illegalFile)
 	{
-		getline(inFile, tmpRead);
-		initBoard(tmpRead, illegalFile);
-		if (inFile.eof() && illegalFile != 0)//Checking if we got any other error from initboard function.
+		if (numOfPieces > 9)
 		{
-			illegalFile= 1; // ERROR - reach to end of file
+			this->status = badPosition;
+			illegalFile = true;
+			return;
+		}
+		else 
+		{
+			getline(inFile, tmpRead);
+
+			this->playerPieces[numOfPieces] = Piece::initPiece(tmpRead);
+			if (this->status != noReason)
+				return;
+			numOfPieces++;
+
 		}
 
-		numOfPieces++;
 
 	}
-	//TODO: create function that checking if there is flag- else return reasun
-	
-}
-void Player::initBoard(string line, int& illegalFile)
-{
-	istringstream tempCh(line);
-	int xLocation;
-	int yLocation;
-	char pieceType;
-	string temp;
-	//TODO: change to get from one long string without spaces. -- Leave as it is for now.
-	getline(tempCh, temp, ' ');
-	pieceType = temp[0];
-	if (checkNumOfPieces(illegalFile, pieceType))
-		return;
-	getline(tempCh, temp, ' ');
-	xLocation = stoi(temp);
-	getline(tempCh, temp, ' ');
-	yLocation = stoi(temp);
-
-	//TODO chack if x and y is between 1-10- else return reasun
-	if (board[xLocation-1][yLocation-1] != '-')
-	{
-		illegalFile = 2;//Bad Positioning input file for player <player> - line <bad line number>
-		//------- Need to add param for the position of the error
-
-		return;
-	}
-	board[xLocation-1][yLocation-1] = pieceType;
-		//TODO: string check to make sure all the chars are valid + add joker
-		
 	
 }
 
 
 
-Player::Player(string vFileName)
+Player::Player(string vFileName) //Constructor
 {
 	int i, j;
 	for (i = 0; i < N; i++)
 	{
 		for (j = 0; j < M; j++)
 		{
-			board[i][j] = '-';
+			playerBoard[i][j] = '-';
 		}
 	}
-	for( i = 0;i<counter;i++)
-	{
-		nPieces[i] = 0;
-	}
+	status = noReason;
 	fileName = vFileName;
+	numPieces = K;
 }
 
-bool Player::checkNumOfPieces(int& illegalFile,char type)
+void Player::checkValidityiPieces()
 {
-	switch (type)
+	int nPieces[6];
+	int i;
+	char type;
+	for (i = 0; i < K; i++)
 	{
-	case 'R':
-		nPieces[R] += 1;
-		break;
-	case 'P':
-		nPieces[P] += 1;
-		break;
-	case 'B':
-		nPieces[B] += 1;
-		break;
-	case 'J':
-		nPieces[J] += 1;
-		break;
-	case 'F':
-		nPieces[F] += 1;
-		break;
-	case 'S':
-		nPieces[S] += 1;
-		break;
+		type = this->playerPieces[K].pieceType;
+		nPieces[type] += 1;
+		/*
+		switch (type)
+		{
+		case 'R':
+			nPieces[R] += 1;
+			break;
+		case 'P':
+			nPieces[P] += 1;
+			break;
+		case 'B':
+			nPieces[B] += 1;
+			break;
+		case 'J':
+			nPieces[J] += 1;
+			break;
+		case 'F':
+			nPieces[F] += 1;
+			break;
+		case 'S':
+			nPieces[S] += 1;
+			break;
+		}
+		*/
 	}
+
 	if (nPieces[P] > MAX_PAPER || nPieces[R] > MAX_ROCK || nPieces[B] > MAX_BOMB || nPieces[J] > MAX_JOKER ||
 		nPieces[S] > MAX_SCISSORS || nPieces[F] > MAX_FLAG)
 	{
-		illegalFile = 3;
-		error = "Too many pieces from the same type";
-		return true;
+		this->status = badPosition; //-	A PIECE type appears in file more than its number or missing flags
+		//error = "Too many pieces from the same type" or 
+		
 	}
-	return false;
+	return;
 }
