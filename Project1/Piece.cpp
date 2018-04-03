@@ -1,6 +1,6 @@
 #include "Piece.h"
 
-Piece Piece::initPiece(string line, bool& illegalLine)
+Piece Piece::initPiece(string line)
 {
 	istringstream tempCh(line);
 	int xLocation;
@@ -16,15 +16,12 @@ Piece Piece::initPiece(string line, bool& illegalLine)
 	getline(tempCh, temp, ' ');
 	xLocation = stoi(temp);
 	if (xLocation < 1 && xLocation>10) // X coordinate isn't inrange
-	{
-		illegalLine = true;
-		return;
+	{		return;
 	}
 	getline(tempCh, temp, ' ');
 	yLocation = stoi(temp);
 	if (yLocation < 1 && yLocation>10) // Y coordinate isn't inrange
 	{
-		illegalLine = true;
 		return;
 	}
 
@@ -42,7 +39,6 @@ Piece Piece::initPiece(string line, bool& illegalLine)
 	//If the piece type isn't one of the pieces in the game
 	if ((pieceType != 'R') && (pieceType != 'P') && (pieceType != 'S') && (pieceType != 'B') && (pieceType != 'F')) 	
 	{
-		illegalLine = true;
 		return;
 	}
 

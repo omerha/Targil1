@@ -2,6 +2,8 @@
 
 void TheGame::init()
 {
+
+	//loop for
 	p[0].readFromFile;
 	if (p[0].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
 	{

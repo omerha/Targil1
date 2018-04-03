@@ -42,8 +42,7 @@ void Player::readFromFile()
 		else 
 		{
 			getline(inFile, tmpRead);
-
-			this->playerPieces[numOfPieces] = Piece::initPiece(tmpRead);
+			this->playerPieces[numOfPieces].initPiece(tmpRead);
 			if (this->status != noReason)
 				return;
 			numOfPieces++;
@@ -79,7 +78,7 @@ void Player::checkValidityiPieces()
 	char type;
 	for (i = 0; i < K; i++)
 	{
-		type = this->playerPieces[K].pieceType;
+		type = this->playerPieces[i].pieceType;
 		nPieces[type] += 1;
 		/*
 		switch (type)
