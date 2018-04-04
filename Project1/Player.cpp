@@ -2,6 +2,7 @@
 
 using namespace std;
 
+/*
 void Player::setBoard()
 {
 	int i;
@@ -22,7 +23,7 @@ void Player::setBoard()
 	}
 	
 }
-
+*/
 
 void Player::readFromFile()
 {
@@ -30,7 +31,6 @@ void Player::readFromFile()
 	int numOfPieces = 0;
 	string tmpRead;
 	ifstream inFile(this->fileName);
-	Piece pieceTmp;
 	while (!inFile.eof()&& ! illegalFile)
 	{
 		if (numOfPieces > 9)
@@ -43,7 +43,8 @@ void Player::readFromFile()
 		{
 			getline(inFile, tmpRead);
 			this->playerPieces[numOfPieces].initPiece(tmpRead);
-			this->playerPieces[numOfPieces].playerNum = this->playerNum;
+
+			this->playerPieces[numOfPieces].setPiecePlayerNum(this->playerNum);
 			if (this->status != noReason)
 				return;
 			numOfPieces++;
@@ -69,7 +70,7 @@ Player::Player(string vFileName, int nPlayer) //Constructor
 	}
 	status = noReason;
 	fileName = vFileName;
-	numPieces = K;
+	// Need to complete numOfMovingPieces =
 	playerNum = nPlayer;
 }
 
@@ -80,7 +81,7 @@ void Player::checkValidityiPieces()
 	char type;
 	for (i = 0; i < K; i++)
 	{
-		type = this->playerPieces[i].pieceType;
+		type = this->playerPieces[i].getPieceType();
 		nPieces[type] += 1;
 		/*
 		switch (type)
@@ -107,8 +108,8 @@ void Player::checkValidityiPieces()
 		*/
 	}
 
-	if (nPieces[P] > MAX_PAPER || nPieces[R] > MAX_ROCK || nPieces[B] > MAX_BOMB || nPieces[J] > MAX_JOKER ||
-		nPieces[S] > MAX_SCISSORS || nPieces[F] > MAX_FLAG)
+	if (nPieces[P] > NUM_OF_PAPER || nPieces[R] > NUM_OF_ROCK || nPieces[B] > NUM_OF_BOMB || nPieces[J] > NUM_OF_JOKER ||
+		nPieces[S] > NUM_OF_SCISSORS || nPieces[F] > NUM_OF_FLAG)
 	{
 		this->status = badPosition; //-	A PIECE type appears in file more than its number or missing flags
 		//error = "Too many pieces from the same type" or 

@@ -10,12 +10,12 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#define MAX_ROCK 2
-#define MAX_PAPER 5
-#define MAX_SCISSORS 1
-#define MAX_BOMB 2
-#define MAX_JOKER 2
-#define MAX_FLAG 1
+#define NUM_OF_ROCK 2
+#define NUM_OF_PAPER 5
+#define NUM_OF_SCISSORS 1
+#define NUM_OF_BOMB 2
+#define NUM_OF_JOKER 2
+#define NUM_OF_FLAG 1
 enum Pieces
 {
 	R=0,
@@ -34,7 +34,7 @@ class Player
 	friend class TheGame;
 	char playerBoard[N][M];
 	Reason status;
-	int numPieces;
+	int numOfMovingPieces;
 	bool flagCaptured = false;
 	std::string fileName;
 	std::string error;

@@ -1,5 +1,4 @@
 #include "TheGame.h"
-
 void TheGame::init()
 {
 
@@ -32,39 +31,29 @@ void TheGame::init()
 		//player1 win
 		//Bad Positioning input file for player <player2> -line <bad line number>
 	}
-	else //((p[0].status == noReason) && (p[1].status == noReason))
-	{
+
+	
 		initStartBoard();
-		if ((p[0].numPieces == 0) && (p[1].numPieces == 0))
-		{
-			winner = 0; //Both Positioning files are analyzed at the same “stage” - so if both are bad the result is 0 (no winner).
-		}
-		else if (p[0].numPieces == 0)
-		{
-			winner = 2; //Player 2 win
-			res = allEaten; // All moving PIECEs of the opponent are eaten
-		}
-		else if (p[1].numPieces == 0)
-		{
-			winner = 1; //Player 1 win
-			res= allEaten;// All moving PIECEs of the opponent are eaten
-		}
-	}
+
+	
 }
 void TheGame::initStartBoard()
 {
 	int i, j;
+	int currXPosition, currYPosition;
 	for (i = 0; i < numOfPlayers; i++)
 	{
-		for (j = 0; j < K&&!winner; j++)
+		for (j = 1; j <= K&&!winner; j++)//Starting from 1 so it will be easier.
 			{
-				if (boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1].pieceType != '-')
+			currXPosition = p[i].playerPieces[j].getPieceX();
+			currYPosition = p[i].playerPieces[j].getPieceY();
+				if (boardPieces[currXPosition][currYPosition].getPieceType() == '-')
 				{
-					boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1] = p[i].playerPieces[j];//Need to create ctor
+					boardPieces[currXPosition][currYPosition] = p[i].playerPieces[j];//Need to create ctor
 				}
 				else
 				{
-					boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1] = piecesFight(boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1], p[i].playerPieces[j]);
+					boardPieces[currXPosition][currYPosition] = piecesFight(boardPieces[currXPosition][currYPosition], p[i].playerPieces[j]);
 				}
 			}
 		if (winner)
@@ -82,13 +71,22 @@ void TheGame::run()
 
 void TheGame::checkForWinner()
 {
-	for (int i = 0; i < numOfPlayers - 1; i++)
+	int howManyPlayerWithZeroPiecesLeft = 0;
+	int playerNumWithZeroPieceLeft = NULL;
+	if (!winner)
 	{
-
+		for (int i = 0; i < numOfPlayers; i++)
+		{
+			if (p[i].numPieces == 0)
+			{
+				howManyPlayerWithZeroPiecesLeft += 1;
+				playerNumWithZeroPieceLeft = i + 1;
+			}
+		}
 	}
 }
 
-Piece TheGame::piecesFight(Piece p1, Piece p2)
+Piece TheGame::piecesFight(Piece p1, Piece p2)//In this function if we find flag it will change the winner.
 {
 	///fight fight fight
 
