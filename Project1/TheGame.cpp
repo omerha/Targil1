@@ -69,7 +69,7 @@ void TheGame::run()
 
 }
 
-void TheGame::checkForWinner()
+void TheGame::checkForWinner() //Leave it like this I'll finish it.
 {
 	int howManyPlayerWithZeroPiecesLeft = 0;
 	int playerNumWithZeroPieceLeft = NULL;
@@ -77,7 +77,7 @@ void TheGame::checkForWinner()
 	{
 		for (int i = 0; i < numOfPlayers; i++)
 		{
-			if (p[i].numPieces == 0)
+			if (p[i].numOfMovingPieces == 0)
 			{
 				howManyPlayerWithZeroPiecesLeft += 1;
 				playerNumWithZeroPieceLeft = i + 1;
