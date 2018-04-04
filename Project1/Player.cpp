@@ -43,6 +43,7 @@ void Player::readFromFile()
 		{
 			getline(inFile, tmpRead);
 			this->playerPieces[numOfPieces].initPiece(tmpRead);
+			this->playerPieces[numOfPieces].playerNum = this->playerNum;
 			if (this->status != noReason)
 				return;
 			numOfPieces++;
@@ -56,7 +57,7 @@ void Player::readFromFile()
 
 
 
-Player::Player(string vFileName) //Constructor
+Player::Player(string vFileName, int nPlayer) //Constructor
 {
 	int i, j;
 	for (i = 0; i < N; i++)
@@ -69,6 +70,7 @@ Player::Player(string vFileName) //Constructor
 	status = noReason;
 	fileName = vFileName;
 	numPieces = K;
+	playerNum = nPlayer;
 }
 
 void Player::checkValidityiPieces()
@@ -113,4 +115,9 @@ void Player::checkValidityiPieces()
 		
 	}
 	return;
+}
+
+void removePiece()
+{
+
 }

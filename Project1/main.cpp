@@ -8,6 +8,6 @@ using namespace std;
 
 int main(int argc,char* argv[])
  {
-	Player player1("test.txt");
+	Player player1("test.txt",1);
 	player1.readFromFile();
 }

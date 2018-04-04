@@ -1,13 +1,13 @@
 #include "Piece.h"
 
-Piece Piece::initPiece(string line)
+void Piece::initPiece(string line)
 {
 	istringstream tempCh(line);
 	int xLocation;
 	int yLocation;
 	char pieceType;
 	string temp;
-	Piece pieceResult;
+////	Piece pieceResult;
 	//TODO: change to get from one long string without spaces. -- Leave as it is for now.
 	getline(tempCh, temp, ' ');
 	pieceType = temp[0];
@@ -27,14 +27,16 @@ Piece Piece::initPiece(string line)
 
 	if (pieceType == 'J')
 	{
-		pieceResult.joker = true;
+////		pieceResult.joker = true;
+		this->joker = true;
 		getline(tempCh, temp, ' ');
 		pieceType = temp[0];
 
 	}
 	else
 	{
-		pieceResult.joker = false;
+////		pieceResult.joker = false;
+		this->joker = false;
 	}
 	//If the piece type isn't one of the pieces in the game
 	if ((pieceType != 'R') && (pieceType != 'P') && (pieceType != 'S') && (pieceType != 'B') && (pieceType != 'F')) 	
@@ -42,11 +44,13 @@ Piece Piece::initPiece(string line)
 		return;
 	}
 
-	pieceResult.pieceType = pieceType;
-	pieceResult.x = xLocation;
-	pieceResult.y = yLocation;
-
-	return pieceResult;
+////	pieceResult.pieceType = pieceType;
+////	pieceResult.x = xLocation;
+////	pieceResult.y = yLocation;
+	this->pieceType = pieceType;
+	this->x = xLocation;
+	this->y = yLocation;
+////	return pieceResult;
 	
 
 }

@@ -4,22 +4,16 @@ void TheGame::init()
 {
 
 	//loop for
-	p[0].readFromFile;
-	if (p[0].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
+	for (int i = 0; i < 2; i++)
 	{
-		p[0].checkValidityiPieces;
-		if (p[0].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
+		p[i].readFromFile();
+		if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
 		{
-			p[0].setBoard;
-		}
-	}
-	p[1].readFromFile;
-	if (p[1].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
-	{
-		p[1].checkValidityiPieces;
-		if (p[1].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
-		{
-			p[1].setBoard;
+			p[i].checkValidityiPieces();
+			if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
+			{
+				p[i].setBoard();
+			}
 		}
 	}
 	if ((p[0].status == badPosition) && (p[1].status == badPosition))
@@ -27,20 +21,20 @@ void TheGame::init()
 		//write in the output file: Bad Positioning input file for both players - player 1: line <X>, player 2: line <Y>
 	}
 	
-	if (p[0].status == badPosition)
+	else if (p[0].status == badPosition)
 	{
 		//player2 win
 		//Bad Positioning input file for player <player1> -line <bad line number>
 	}
 
-	if (p[1].status == badPosition)
+	else if (p[1].status == badPosition)
 	{
 		//player1 win
 		//Bad Positioning input file for player <player2> -line <bad line number>
 	}
 	else //((p[0].status == noReason) && (p[1].status == noReason))
 	{
-		fight;
+		initStartBoard();
 		if ((p[0].numPieces == 0) && (p[1].numPieces == 0))
 		{
 			winner = 0; //Both Positioning files are analyzed at the same “stage” - so if both are bad the result is 0 (no winner).
@@ -57,17 +51,26 @@ void TheGame::init()
 		}
 	}
 }
-void TheGame::fight()
+void TheGame::initStartBoard()
 {
 	int i, j;
-	for (i = 0; i < N; i++)
+	for (i = 0; i < numOfPlayers; i++)
 	{
-		for (j = 0; j < M; j++)
-		{
-			if ((p[0].playerBoard[i][j] != '-')&&(p[1].playerBoard[i][j] != '-'))
+		for (j = 0; j < K&&!winner; j++)
 			{
-				//check who is more power and erase the secound
+				if (boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1].pieceType != '-')
+				{
+					boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1] = p[i].playerPieces[j];//Need to create ctor
+				}
+				else
+				{
+					boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1] = piecesFight(boardPieces[p[i].playerPieces[j].x - 1][p[i].playerPieces[j].y - 1], p[i].playerPieces[j]);
+				}
 			}
+		if (winner)
+		{
+			//create winner function
+			return;
 		}
 	}
 }
@@ -75,4 +78,19 @@ void TheGame::fight()
 void TheGame::run()
 {
 
+}
+
+void TheGame::checkForWinner()
+{
+	for (int i = 0; i < numOfPlayers - 1; i++)
+	{
+
+	}
+}
+
+Piece TheGame::piecesFight(Piece p1, Piece p2)
+{
+	///fight fight fight
+
+	
 }

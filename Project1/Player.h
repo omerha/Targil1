@@ -29,16 +29,19 @@ enum Pieces
 
 class Player
 {
+	int playerNum;
 	Piece playerPieces[K];
 	friend class TheGame;
 	char playerBoard[N][M];
 	Reason status;
 	int numPieces;
+	bool flagCaptured = false;
 	std::string fileName;
 	std::string error;
 public:
 	void readFromFile();//קוראת את הנתונים מהקובץ ומעדכנת את ה- player pieces
 	void setBoard();
 	void checkValidityiPieces();
-	Player(std::string vFileName);
+	void removePiece();
+	Player(std::string vFileName,int nPlayer);
 };
