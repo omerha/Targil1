@@ -6,6 +6,7 @@ Piece::Piece()//constructor
 	pieceType = '-';
 	joker = false;
 }
+/*
 void Piece::initPiece(string line)
 {
 	istringstream tempCh(line);
@@ -60,3 +61,4 @@ void Piece::initPiece(string line)
 	
 
 }
+*/

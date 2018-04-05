@@ -13,7 +13,7 @@ class Piece
 	char pieceType;
 	bool joker;
 	//int playerNum;
-public: // c++ אני חושב שפה רק רושמים את ההגדרה של הפונקציה, ואת המימוש רושמים בקובץ
+public: // In my opinion, here we need to write only the definition of the function, and the implementation should be in the c ++ file
 
 	void initPiece(std::string line);
 	Piece()
@@ -39,10 +39,12 @@ public: // c++ אני חושב שפה רק רושמים את ההגדרה של הפונקציה, ואת המימוש רושמים ב
 	{
 		return joker;
 	}
+	/*
 	int getPiecePlayerNum()
 	{
 		return playerNum;
 	}
+	*/
 	void setPieceX(int pX)
 	{
 		x = pX;
@@ -59,10 +61,12 @@ public: // c++ אני חושב שפה רק רושמים את ההגדרה של הפונקציה, ואת המימוש רושמים ב
 	{
 		joker = pJoker;
 	}
+	/*
 	void setPiecePlayerNum(int pPlayerNum)
 	{
 		playerNum = pPlayerNum;
 	}
+	*/
 
 
 	//void draw(char ch); // not implemented yet

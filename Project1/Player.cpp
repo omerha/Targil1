@@ -36,6 +36,7 @@ Player::Player(string vFileName, int nPlayer) //Constructor
 		counterPieces[i] = 0;
 	error= noError;
 	errorLine = 0;
+	win = false;
 }
 
 void Player::readFromFile()

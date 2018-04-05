@@ -8,7 +8,7 @@ class TheGame
 	int numOfPlayers = 2;
 	Player p[2]; //need to get the fileName
 	int winner;
-	Piece boardPieces[N][M];//This array will start from 1 and instead to be i = 0;i<10 it will be i=1;i<=10
+	Piece gameBoard[N][M];
 	Reason res;
 
 public:
@@ -17,4 +17,6 @@ public:
 	void run();
 	void checkForWinner();
 	int pieceFight(int i, int j);
+	TheGame();
+	void move();
 };
