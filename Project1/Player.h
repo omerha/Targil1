@@ -1,12 +1,13 @@
 #pragma once
 
+
 #include "Piece.h"
 #include "Reason.h"
-
+#include "Error.h"
 
 #define M 10 //colums
 #define N 10 // rows
-#define K 10 // The num of pieces of each player
+#define K 13 // The num of pieces of each player
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -29,15 +30,18 @@ enum Pieces
 
 class Player
 {
-	int playerNum;
-	Piece playerPieces[K];
+	//int playerNum;
+	//Piece playerPieces[K];
 	friend class TheGame;
-	char playerBoard[N][M];
+	Piece playerBoard[N][M];
+	int counterPieces[6];
 	Reason status;
-	int numOfMovingPieces;
+	//int numOfMovingPieces;
 	bool flagCaptured = false;
 	std::string fileName;
-	std::string error;
+	Error error;
+	int errorLine;
+	//std::string error;
 public:
 	void readFromFile();//קוראת את הנתונים מהקובץ ומעדכנת את ה- player pieces
 	void setBoard();

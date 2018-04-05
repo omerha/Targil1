@@ -12,14 +12,14 @@ class Piece
 	int x, y;
 	char pieceType;
 	bool joker;
-	int playerNum;
-public:
+	//int playerNum;
+public: // c++ אני חושב שפה רק רושמים את ההגדרה של הפונקציה, ואת המימוש רושמים בקובץ
 
 	void initPiece(std::string line);
 	Piece()
 	{
 		x = y = 0;
-		playerNum = -1;
+		//playerNum = -1;
 		joker = false;
 		pieceType = '-';
 	}

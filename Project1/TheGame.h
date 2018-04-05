@@ -16,5 +16,5 @@ public:
 	void initStartBoard();
 	void run();
 	void checkForWinner();
-	Piece piecesFight(Piece p1, Piece p2);
+	int pieceFight(int i, int j);
 };

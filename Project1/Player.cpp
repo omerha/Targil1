@@ -25,30 +25,100 @@ void Player::setBoard()
 }
 */
 
+Player::Player(string vFileName, int nPlayer) //Constructor
+{
+
+	status = noReason;
+	fileName = vFileName;
+	// Need to complete numOfMovingPieces =
+	//playerNum = nPlayer;
+	for (int i = 0; i < 6; i++)
+		counterPieces[i] = 0;
+	error= noError;
+	errorLine = 0;
+}
+
 void Player::readFromFile()
 {
 	bool illegalFile = false;
-	int numOfPieces = 0;
-	string tmpRead;
+	int numOfRows = 1;
+	string tmpRead, temp;
 	ifstream inFile(this->fileName);
+	istringstream tempCh(tmpRead);  //what's the meaning of this?
+	char type;
+	int xLocation, yLocation;
+
+
 	while (!inFile.eof()&& ! illegalFile)
 	{
-		if (numOfPieces > 9)
+		if (numOfRows > K)
 		{
 			this->status = badPosition;
+			error = tooManyRows;
 			illegalFile = true;
 			return;
 		}
 		else 
 		{
 			getline(inFile, tmpRead);
-			this->playerPieces[numOfPieces].initPiece(tmpRead);
 
-			this->playerPieces[numOfPieces].setPiecePlayerNum(this->playerNum);
-			if (this->status != noReason)
+			//inFile.getline(temp, 128); //why this isn't working??
+
+			/////////////////////////////////////////////
+			getline(tempCh, temp, ' ');
+			type = temp[0];
+
+
+			getline(tempCh, temp, ' ');
+			xLocation = stoi(temp);
+			if (xLocation < 1 && xLocation>10) // X coordinate isn't inrange
+			{
+				status = badPosition;
+				errorLine = numOfRows;
 				return;
-			numOfPieces++;
+			}
+			getline(tempCh, temp, ' ');
+			yLocation = stoi(temp);
+			if (yLocation < 1 && yLocation>10) // Y coordinate isn't inrange
+			{
+				status = badPosition;
+				errorLine = numOfRows;
+				return;
+			}
 
+			if (this->playerBoard[xLocation][yLocation].getPieceType != '-') // There is a piece in this location
+			{
+				status = badPosition;
+				errorLine = numOfRows;
+				return;
+			}
+			this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
+			this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
+
+			if (type == 'J')
+			{
+				playerBoard[xLocation][yLocation].setPieceJoker(true);
+				getline(tempCh, temp, ' ');
+				type = temp[0];
+
+			}
+
+
+			//If the piece type isn't one of the pieces in the game
+			if ((type != 'R') && (type != 'P') && (type != 'S') && (type != 'B') && (type != 'F'))
+			{
+				status = badPosition;
+				error = unKnownPiece;
+				errorLine = numOfRows;
+				return;
+			}
+			this->playerBoard[xLocation][yLocation].setPieceType(type);
+
+
+			//this->playerPieces[numOfPieces].setPiecePlayerNum(this->playerNum);
+
+			counterPieces[type]++; //if this isn't work- we need to do switch case
+			numOfRows++;
 		}
 
 
@@ -58,63 +128,26 @@ void Player::readFromFile()
 
 
 
-Player::Player(string vFileName, int nPlayer) //Constructor
-{
-	int i, j;
-	for (i = 0; i < N; i++)
-	{
-		for (j = 0; j < M; j++)
-		{
-			playerBoard[i][j] = '-';
-		}
-	}
-	status = noReason;
-	fileName = vFileName;
-	// Need to complete numOfMovingPieces =
-	playerNum = nPlayer;
-}
+
 
 void Player::checkValidityiPieces()
 {
-	int nPieces[6];
-	int i;
-	char type;
-	for (i = 0; i < K; i++)
-	{
-		type = this->playerPieces[i].getPieceType();
-		nPieces[type] += 1;
-		/*
-		switch (type)
-		{
-		case 'R':
-			nPieces[R] += 1;
-			break;
-		case 'P':
-			nPieces[P] += 1;
-			break;
-		case 'B':
-			nPieces[B] += 1;
-			break;
-		case 'J':
-			nPieces[J] += 1;
-			break;
-		case 'F':
-			nPieces[F] += 1;
-			break;
-		case 'S':
-			nPieces[S] += 1;
-			break;
-		}
-		*/
-	}
 
-	if (nPieces[P] > NUM_OF_PAPER || nPieces[R] > NUM_OF_ROCK || nPieces[B] > NUM_OF_BOMB || nPieces[J] > NUM_OF_JOKER ||
-		nPieces[S] > NUM_OF_SCISSORS || nPieces[F] > NUM_OF_FLAG)
+
+	if (counterPieces[P] > NUM_OF_PAPER || counterPieces[R] > NUM_OF_ROCK ||  counterPieces[B] > NUM_OF_BOMB || counterPieces[J] > NUM_OF_JOKER ||
+		counterPieces[S] > NUM_OF_SCISSORS || counterPieces[F] > NUM_OF_FLAG)
 	{
-		this->status = badPosition; //-	A PIECE type appears in file more than its number or missing flags
-		//error = "Too many pieces from the same type" or 
+		this->status = badPosition; //-	A PIECE type appears in file more than its number
+		error = tooManyPieces;
 		
 	}
+	if (counterPieces[F] != 1)
+	{
+		this->status = badPosition;// missing flag
+		error = noFlag;
+	}
+	
+
 	return;
 }
 

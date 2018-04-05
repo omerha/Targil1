@@ -6,8 +6,56 @@ using namespace std;
 #include "Player.h"
 
 
-int main(int argc,char* argv[])
+void main(int argc,char* argv[])
  {
-	Player player1("test.txt",1);
+	
+	int i;
+	bool quiet=false, showAll=false, showInfo=false, showPlayer=false, delay=false;
+	int playerShow=0, timeToDelay=0;
+	bool legal = true;
+	for (i = 1; i < argc && legal; i++)
+	{
+		
+		if (argv[i] == "-queit")
+			quiet = true;
+		else if (argv[i] == "-show-all")
+			showAll = true;
+		else if (argv[i] == "-show-only-know-info")
+			showInfo = true;
+		else if (argv[i] == "-show")
+		{
+			showPlayer = true;
+			playerShow = (int)argv[i + 1];
+			i++;
+		}
+		else if (argv[i] == "-delay")
+		{
+			delay = true;
+			timeToDelay = (int)argv[i + 1];
+			i++;
+		}
+	
+		else legal = false;
+	}
+	if (!legal)
+		cout << "one of the arguments not legal";
+	
+	else if (quiet && (showAll || showInfo || showPlayer || delay))
+		cout << "You can't insert presentation mode arguments and non-presentation mode arguments together";
+
+	if (!quiet && !showAll && !showInfo && !showPlayer) //	Default presentation mode is show-all
+	{
+		showAll = true;
+		delay = true;
+		if (timeToDelay = 0)
+			timeToDelay = 50;
+	}
+
+
+	
+	
+	Player player1("test.txt", 1);
 	player1.readFromFile();
+	
+
 }

@@ -37,7 +37,36 @@ void TheGame::init()
 
 	
 }
+
 void TheGame::initStartBoard()
+{ // The function places the tools of the two players on the board, 
+	//if there are two tools on the same slot check who is stronger and flatten the other
+
+	int i, j, res;
+	for (i = 0; i < N; i++)
+	{
+		for (i = 0; i < M; i++)
+		{
+			if ((p[0].playerBoard[i][j].getPieceType != '-') && (p[1].playerBoard[i][j].getPieceType != '-'))
+			{
+				res = pieceFight(i, j);
+			}
+
+		}
+	}
+}
+
+int TheGame::pieceFight(int i, int j)
+{  // The function gets two indexes and checks which piece is stronger, erases the second piece, 
+	//updates the number of tools, returns 0 if a tie, 1 if the first player wins, and 2 if the second player is analyzed
+	char typePlayer1 = p[0].playerBoard[i][j].getPieceType;
+	char typePlayer2 = p[1].playerBoard[i][j].getPieceType;
+	switch (typePlayer1)
+		case 'R':
+
+
+}
+/*void TheGame::initStartBoard()
 {
 	int i, j;
 	int currXPosition, currYPosition;
@@ -62,7 +91,7 @@ void TheGame::initStartBoard()
 			return;
 		}
 	}
-}
+}*/
 
 void TheGame::run()
 {
@@ -86,9 +115,3 @@ void TheGame::checkForWinner() //Leave it like this I'll finish it.
 	}
 }
 
-Piece TheGame::piecesFight(Piece p1, Piece p2)//In this function if we find flag it will change the winner.
-{
-	///fight fight fight
-
-	
-}
