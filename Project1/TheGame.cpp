@@ -275,6 +275,10 @@ void TheGame::move(int moveNum)
 		newJokerType = '-';
 		if (p[i].move(moveNum, newX, newY, oldX, oldY, jokerX, jokerY, newJokerType))
 		{
+			if (newJokerType != '-')//means the player wants to change the joker.
+			{
+				gameBoard[jokerX][jokerY].setPieceType(newJokerType);
+			}
 			movePiece(oldX, oldY, newX, newY);
 			checkForWinner();
 		}

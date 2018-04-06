@@ -88,7 +88,7 @@ void Player::putMovesFileInStringArr()
 }
 bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType)
 {
-	string* currInput;
+	string* currInput = nullptr;
 	int numOfIndex = 0;
 	int currX = 0, currY = 0, newX = 0, newY = 0;
 	if (moveNum < numOfMoves)
@@ -164,6 +164,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 	else {
 		error = errorInMoveFiles;
 	}
+	delete[] currInput;
 }
 void Player::movePlayerError(int lineNum)
 {
