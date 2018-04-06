@@ -12,8 +12,8 @@ class Piece
 	int x, y;
 	char pieceType;
 	bool joker;
-	//int playerNum;
-public: // In my opinion, here we need to write only the definition of the function, and the implementation should be in the c ++ file
+	//int playerNum; -- we need this for printing the common board.
+public: 
 
 	void initPiece(std::string line);
 	Piece()
@@ -61,6 +61,7 @@ public: // In my opinion, here we need to write only the definition of the funct
 	{
 		joker = pJoker;
 	}
+	void drawPiece(int xL,int yL);
 	/*
 	void setPiecePlayerNum(int pPlayerNum)
 	{

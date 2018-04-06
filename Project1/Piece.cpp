@@ -1,4 +1,5 @@
 #include "Piece.h"
+#include "io_utils.h"
 /*
 Piece::Piece()//constructor
 {
@@ -62,3 +63,21 @@ void Piece::initPiece(string line)
 
 }
 */
+
+void Piece::drawPiece(int xL, int yL)
+{
+	gotoxy(xL*3, yL*2);
+	cout << pieceType;
+	for (int j = 1; j < 11; j++)
+	{
+		for (int i = 1; i < 11; i++)
+		{
+			gotoxy(i * 3 - 2,j * 2);
+			cout << "|";
+			gotoxy(i * 3 + 2, j * 2);
+			cout << "|";
+		}
+
+	}
+
+}

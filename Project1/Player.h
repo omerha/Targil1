@@ -4,7 +4,6 @@
 #include "Piece.h"
 #include "Reason.h"
 #include "Error.h"
-
 #define M 10 //colums
 #define N 10 // rows
 #define K 13 // The num of pieces of each player
@@ -34,7 +33,7 @@ class Player
 	//int playerNum;
 	//Piece playerPieces[K];
 	friend class TheGame;
-	Piece playerBoard[N][M];
+	Piece playerBoard[N+1][M+1];
 	int counterPieces[6];
 	Reason status;
 	//int numOfMovingPieces;
@@ -53,9 +52,11 @@ public:
 	void checkValidityiPieces();
 	void removePiece();
 	void countPieces(char type);
-	void checkXYInRange(int num,char cord);
+	bool checkXYInRange(int num,char cord);
 	Player(std::string vStartGameFile,std:: string vMovesFile,int nPlayer);
 	void checkForCorrectType(char type);
 	string* parseLine(string line, int& size);
 	void putMovesFileInStringArr();
+	bool move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType);
+	void movePlayerError(int lineNum);
 };

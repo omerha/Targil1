@@ -35,6 +35,7 @@ Player::Player(string vStartGameFile, string vMovesFile, int nPlayer) //Construc
 	//playerNum = nPlayer;
 	for (int i = 0; i < 6; i++)
 		counterPieces[i] = 0;
+	putMovesFileInStringArr();
 	error = noError;
 	errorLine = 0;
 	win = false;
@@ -85,6 +86,91 @@ void Player::putMovesFileInStringArr()
 	}
 	numOfMoves = numOfRows;
 }
+bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType)
+{
+	string* currInput;
+	int numOfIndex = 0;
+	int currX = 0, currY = 0, newX = 0, newY = 0;
+	if (moveNum < numOfMoves)
+	{
+		currInput = parseLine(movesArr[moveNum], numOfIndex);
+		if (numOfIndex < 3 || numOfIndex>7)
+		{
+			error = errorInMoveFiles;//TODO: error - too many or too few arguments in line.
+			errorLine = moveNum;
+			return false;
+		}
+		currX = stoi(currInput[0]);
+		currY = stoi(currInput[1]);
+		newX = stoi(currInput[2]);
+		newY = stoi(currInput[3]);
+		if (!(checkXYInRange(currX, 'X') || checkXYInRange(newX, 'X') || checkXYInRange(newY, 'Y') || checkXYInRange(currY, 'Y')))
+		{
+			movePlayerError(moveNum);//TODO:error x y not in range.
+			return false;
+		}
+		if (playerBoard[currX][currY].getPieceType() == '-')
+		{
+			movePlayerError(moveNum);//TODO:error the player is trying to move a piece that does not exist.
+			return false;
+		}
+		if (numOfIndex > 6)//means there is a move for the joker.
+		{
+			if (currInput[4].length() == 2)
+			{
+				if (currInput[4][1] == 'J')
+				{
+					int xJoker = stoi(currInput[5]);
+					int yJoker = stoi(currInput[6]);
+					char nJokerType = currInput[7][0];
+					if (!(checkXYInRange(xJoker, 'X') || checkXYInRange(yJoker, 'Y')))//Something is wrong with joker xy.
+					{
+						movePlayerError(moveNum);
+						return false;
+					}
+					else if (playerBoard[xJoker][yJoker].getPieceJoker())
+					{
+						playerBoard[xJoker][yJoker].setPieceType(nJokerType);
+						jokerXLocation = xJoker;
+						jokerYLocation = yJoker;
+						newJokerType = nJokerType;
+					}
+					else
+					{
+						movePlayerError(moveNum);
+						return false;
+					}
+				}
+				else
+				{
+					movePlayerError(moveNum);
+					return false;
+				}
+			}
+			else// I am assuming that the joker is written like this - [J:
+			{
+			movePlayerError(moveNum);//TODO:something is wrong with the line..
+			return false;
+			}
+		}
+		playerBoard[newX][newY].setPieceType(playerBoard[currX][currY].getPieceType());
+		playerBoard[currX][currY].setPieceType('-');
+		oldXLocation = currX;
+		oldYLocation = currY;
+		newXLocation = newX;
+		newYLocation = newY;
+		return true;
+	}
+	else {
+		error = errorInMoveFiles;
+	}
+}
+void Player::movePlayerError(int lineNum)
+{
+	error = errorInMoveFiles;
+	errorLine = lineNum;
+}
+
 void Player::readFromFile()
 {
 	bool illegalFile = false;
@@ -112,10 +198,10 @@ void Player::readFromFile()
 			{
 				type = getInput[0][0];
 				xLocation = stoi(getInput[1]);
-				checkXYInRange(xLocation, 'X');
+				
 				yLocation = stoi(getInput[2]);
-				checkXYInRange(yLocation, 'Y'); 
-				if (status != noReason)
+				
+				if (!(checkXYInRange(yLocation, 'Y') || checkXYInRange(xLocation, 'X')))
 				{
 					errorLine = numOfRows;
 					return;
@@ -221,14 +307,14 @@ void Player::countPieces(char type)
 
 }
 
-void Player::checkXYInRange(int num,char cord)
+bool Player::checkXYInRange(int num,char cord)
 {
 	if (cord == 'X')
 	{
 		if (num < 1 || num>10) // X coordinate isn't inrange
 		{
 			status = badPosition;
-			return;
+			return false;
 		}
 	}
 	if (cord == 'Y')
@@ -236,7 +322,8 @@ void Player::checkXYInRange(int num,char cord)
 		if (num < 1 || num>10) // X coordinate isn't inrange
 		{
 			status = badPosition;
-			return;
+			return false;
 		}
 	}
+	return true;
 }

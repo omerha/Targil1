@@ -5,7 +5,7 @@ void TheGame::init()
 {
 	bool goodToInitBoard = true;
 	//loop for
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < this->numOfPlayers; i++)
 	{
 		p[i].readFromFile();
 		if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
@@ -28,19 +28,14 @@ void TheGame::initStartBoard()
 	//if there are two tools on the same slot check who is stronger and flatten the other
 
 	int i, j, res;
-	for (i = 0; i < N; i++)
+	for (i = 1; i <= N; i++)
 	{
-		for (j = 0; j < M; j++)
+		for (j = 1; j <= M; j++)
 		{
 			if ((p[0].playerBoard[i][j].getPieceType() != '-') && (p[1].playerBoard[i][j].getPieceType() != '-'))
 			{
 				res = pieceFight(i, j);
-				if (res == 0) //It means that both players lost
-					this->gameBoard[i][j].setPieceType('-');
-				if (res==1) ///It means that player 1 wins in this square
-					this->gameBoard[i][j].setPieceType(p[0].playerBoard[i][j].getPieceType());
-				else if (res==2) //It means that player 1 wins in this square
-					this->gameBoard[i][j].setPieceType(p[1].playerBoard[i][j].getPieceType());
+				setFightResult(res, i, j);
 			}
 			else if (p[0].playerBoard[i][j].getPieceType() != '-')
 				this->gameBoard[i][j].setPieceType(p[0].playerBoard[i][j].getPieceType());
@@ -222,10 +217,20 @@ int TheGame::pieceFight(int i, int j)
 
 }
 
+void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)
+{
+	if (fightResult == 0) //It means that both players lost
+		this->gameBoard[xLoc][yLoc].setPieceType('-');
+	if (fightResult == 1) ///It means that player 1 wins in this square
+		this->gameBoard[xLoc][yLoc].setPieceType(p[0].playerBoard[xLoc][yLoc].getPieceType());
+	else if (fightResult == 2) //It means that player 1 wins in this square
+		this->gameBoard[xLoc][yLoc].setPieceType(p[1].playerBoard[xLoc][yLoc].getPieceType());
+}
+
 void TheGame::checkForWinner() 
 {
 	int i,  numPlayer, counter = 0;
-	for (numPlayer = 0; numPlayer < 2; numPlayer++)
+	for (numPlayer = 0; numPlayer < this->numOfPlayers; numPlayer++)
 	{
 		counter = 0;
 		for (i = 0; i <= 3; i++)
@@ -250,18 +255,65 @@ void TheGame::checkForWinner()
 
 void TheGame::run()
 {
+	int moveNum = 0;
 	init();
+	drawGameBoard();
 	checkForWinner();
 	while (!winner)
 	{
-		move();
+		move(moveNum++);
 	}
 }
 
-void TheGame::move()
+void TheGame::move(int moveNum)
 {
-	cout << "check";
+	int i, j;
+	int newX = 0, newY = 0, oldX = 0, oldY = 0, jokerX = 0, jokerY = 0;
+	char newJokerType = '-';
+	for (i = 0; i < numOfPlayers && !winner; i++)
+	{
+		newJokerType = '-';
+		if (p[i].move(moveNum, newX, newY, oldX, oldY, jokerX, jokerY, newJokerType))
+		{
+			movePiece(oldX, oldY, newX, newY);
+			checkForWinner();
+		}
+		else {
+			cout << "got to else";//need to check for errors in players + set winner.
+		}
+
+	}
 }
+
+void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY)
+{
+	int fightRes;
+	if (gameBoard[newX][newY].getPieceType() != '-')//there is a piece already in this place - fight!
+	{
+		fightRes = pieceFight(newX, newY);
+		setFightResult(fightRes, newX, newY);
+	}
+	else
+	{
+		gameBoard[newX][newY].setPieceType(gameBoard[oldX][oldY].getPieceType());
+		gameBoard[oldX][oldY].setPieceType('-');
+	}
+}
+
+void TheGame::drawGameBoard()
+{
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 1; j <= M; j++)
+		{
+			if (gameBoard[i][j].getPieceType() != '-')
+			{
+				gameBoard[i][j].drawPiece(i,j);
+			}
+		}
+	}
+}
+
 /*void TheGame::initStartBoard()
 {
 int i, j;
