@@ -115,11 +115,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="files.h" />
+    <ClCompile Include="io_utils.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Piece.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="TheGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="files.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="Arguments.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="Error.h" />
+    <ClInclude Include="io_utils.h" />
+    <ClInclude Include="Piece.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Reason.h" />
+    <ClInclude Include="TheGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
