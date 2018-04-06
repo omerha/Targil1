@@ -1,12 +1,12 @@
 #include "Piece.h"
-
+/*
 Piece::Piece()//constructor
 {
 	x = y = 0;
 	pieceType = '-';
 	joker = false;
 }
-/*
+
 void Piece::initPiece(string line)
 {
 	istringstream tempCh(line);

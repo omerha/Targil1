@@ -21,37 +21,82 @@ void Player::setBoard()
 		}
 		else this->playerBoard[xCoordinate-1][yCoordinate-1] = type;
 	}
-	
+
 }
 */
 
-Player::Player(string vFileName, int nPlayer) //Constructor
+Player::Player(string vStartGameFile, string vMovesFile, int nPlayer) //Constructor
 {
 
 	status = noReason;
-	fileName = vFileName;
+	startGameFile = vStartGameFile;
+	movesFile = vMovesFile;
 	// Need to complete numOfMovingPieces =
 	//playerNum = nPlayer;
 	for (int i = 0; i < 6; i++)
 		counterPieces[i] = 0;
-	error= noError;
+	error = noError;
 	errorLine = 0;
 	win = false;
 }
 
+void Player::checkForCorrectType(char type)
+{
+	if ((type != 'R') && (type != 'P') && (type != 'S') && (type != 'B') && (type != 'F'))
+	{
+		status = badPosition;
+		error = unKnownPiece;
+	}
+}
+string* Player::parseLine(string line, int& size)
+{
+	string tmpRead, temp;
+	istringstream tempCh(line);
+	int inputIndex = 0;
+	string getInput[20] = { "0" };
+	while (getline(tempCh, temp, ' '))
+	{
+		getInput[inputIndex++] = temp;
+		//splitLineStatus = true;
+	}
+	string* out = new string[inputIndex];
+	for(int i=0;i<inputIndex;i++)
+		out[i] = getInput[i];
+	
+	size = inputIndex;
+	return out;
+}
+void Player::putMovesFileInStringArr()
+{
+	int numOfRows = 0;
+	string tmpReadFile;
+	ifstream inFile(this->movesFile);
+	while (!inFile.eof() && inFile)
+	{
+		if (getline(inFile, tmpReadFile))
+		{
+			movesArr[numOfRows++] = tmpReadFile;
+		}
+		else
+		{
+			cout << "error in moves file";
+			//TODO: add relevant error;
+		}
+	}
+	numOfMoves = numOfRows;
+}
 void Player::readFromFile()
 {
 	bool illegalFile = false;
-	int numOfRows = 1;
-	string tmpRead, temp;
-	ifstream inFile(this->fileName);
-	istringstream tempCh(tmpRead);  //what's the meaning of this?
-	char type;
+	int numOfRows = 0, inputIndex = 0;
+	string tmpRead;
+	string* getInput =nullptr;
+	ifstream inFile(this->startGameFile);
 	int xLocation, yLocation;
-
-
-	while (!inFile.eof()&& ! illegalFile)
+	char type;
+	while (!inFile.eof() && !illegalFile && inFile)
 	{
+		numOfRows++;
 		if (numOfRows > K)
 		{
 			this->status = badPosition;
@@ -59,72 +104,69 @@ void Player::readFromFile()
 			illegalFile = true;
 			return;
 		}
-		else 
+		else if (getline(inFile, tmpRead))
 		{
-			getline(inFile, tmpRead);
-
-			//inFile.getline(temp, 128); //why this isn't working??
-
-			/////////////////////////////////////////////
-			getline(tempCh, temp, ' ');
-			type = temp[0];
-
-
-			getline(tempCh, temp, ' ');
-			xLocation = stoi(temp);
-			if (xLocation < 1 && xLocation>10) // X coordinate isn't inrange
+			inputIndex = 0;
+		    getInput = parseLine(tmpRead, inputIndex);
+			if (inputIndex>=3)
 			{
-				status = badPosition;
-				errorLine = numOfRows;
-				return;
+				type = getInput[0][0];
+				xLocation = stoi(getInput[1]);
+				checkXYInRange(xLocation, 'X');
+				yLocation = stoi(getInput[2]);
+				checkXYInRange(yLocation, 'Y'); 
+				if (status != noReason)
+				{
+					errorLine = numOfRows;
+					return;
+				}
+				if (this->playerBoard[xLocation][yLocation].getPieceType() != '-') // There is a piece in this location
+				{
+					status = badPosition;
+					errorLine = numOfRows;
+					return;
+				}
+				this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
+				this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
+
+				if (getInput[0][0] == 'J')
+				{
+					if (inputIndex == 4)
+					{
+						playerBoard[xLocation][yLocation].setPieceJoker(true);
+						type = getInput[3][0];
+					}
+					else
+					{
+						status = badPosition;
+						errorLine = numOfRows;
+						return;//wrong input of joker
+					}
+				}
+				checkForCorrectType(type);
+				//If the piece type isn't one of the pieces in the game
+				if (status != noReason)
+				{
+					errorLine = numOfRows;
+					return;
+				}
+				this->playerBoard[xLocation][yLocation].setPieceType(type);
+				//this->playerPieces[numOfPieces].setPiecePlayerNum(this->playerNum);
+				countPieces(type);
 			}
-			getline(tempCh, temp, ' ');
-			yLocation = stoi(temp);
-			if (yLocation < 1 && yLocation>10) // Y coordinate isn't inrange
-			{
-				status = badPosition;
-				errorLine = numOfRows;
-				return;
-			}
-
-			if (this->playerBoard[xLocation][yLocation].getPieceType != '-') // There is a piece in this location
-			{
-				status = badPosition;
-				errorLine = numOfRows;
-				return;
-			}
-			this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
-			this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
-
-			if (type == 'J')
-			{
-				playerBoard[xLocation][yLocation].setPieceJoker(true);
-				getline(tempCh, temp, ' ');
-				type = temp[0];
-
-			}
-
-
-			//If the piece type isn't one of the pieces in the game
-			if ((type != 'R') && (type != 'P') && (type != 'S') && (type != 'B') && (type != 'F'))
-			{
-				status = badPosition;
-				error = unKnownPiece;
-				errorLine = numOfRows;
-				return;
-			}
-			this->playerBoard[xLocation][yLocation].setPieceType(type);
-
-
-			//this->playerPieces[numOfPieces].setPiecePlayerNum(this->playerNum);
-
-			counterPieces[type]++; //if this isn't work- we need to do switch case
-			numOfRows++;
+			else
+				cout << "error input";
+			//error spliting line
 		}
-
-
+		else
+			cout << "error input";
+		//error input
+		delete[] getInput;
 	}
-	
+	if (numOfRows == 0)
+	{
+		//File is empty = add relevatn error.
+	}
 }
 
 
@@ -135,24 +177,66 @@ void Player::checkValidityiPieces()
 {
 
 
-	if (counterPieces[P] > NUM_OF_PAPER || counterPieces[R] > NUM_OF_ROCK ||  counterPieces[B] > NUM_OF_BOMB || counterPieces[J] > NUM_OF_JOKER ||
+	if (counterPieces[P] > NUM_OF_PAPER || counterPieces[R] > NUM_OF_ROCK || counterPieces[B] > NUM_OF_BOMB || counterPieces[J] > NUM_OF_JOKER ||
 		counterPieces[S] > NUM_OF_SCISSORS || counterPieces[F] > NUM_OF_FLAG)
 	{
 		this->status = badPosition; //-	A PIECE type appears in file more than its number
 		error = tooManyPieces;
-		
+
 	}
 	if (counterPieces[F] != 1)
 	{
 		this->status = badPosition;// missing flag
 		error = noFlag;
 	}
-	
-
-	return;
 }
 
 void removePiece()
 {
 
+}
+void Player::countPieces(char type)
+{
+	switch (type)
+	{
+	case 'R':
+		counterPieces[R] += 1;
+		break;
+	case 'P':
+		counterPieces[P] += 1;
+		break;
+	case 'B':
+		counterPieces[B] += 1;
+		break;
+	case 'J':
+		counterPieces[J] += 1;
+		break;
+	case 'F':
+		counterPieces[F] += 1;
+		break;
+	case 'S':
+		counterPieces[S] += 1;
+		break;
+	}
+
+}
+
+void Player::checkXYInRange(int num,char cord)
+{
+	if (cord == 'X')
+	{
+		if (num < 1 || num>10) // X coordinate isn't inrange
+		{
+			status = badPosition;
+			return;
+		}
+	}
+	if (cord == 'Y')
+	{
+		if (num < 1 || num>10) // X coordinate isn't inrange
+		{
+			status = badPosition;
+			return;
+		}
+	}
 }

@@ -39,15 +39,23 @@ class Player
 	Reason status;
 	//int numOfMovingPieces;
 	//bool flagCaptured = false;
-	std::string fileName;
+	std::string startGameFile;
+	std::string movesFile;
 	Error error;
 	int errorLine;
 	bool win;
+	string movesArr[100];
+	int numOfMoves = 0;
 	//std::string error;
 public:
 	void readFromFile();//קוראת את הנתונים מהקובץ ומעדכנת את ה- player pieces
 	void setBoard();
 	void checkValidityiPieces();
 	void removePiece();
-	Player(std::string vFileName,int nPlayer);
+	void countPieces(char type);
+	void checkXYInRange(int num,char cord);
+	Player(std::string vStartGameFile,std:: string vMovesFile,int nPlayer);
+	void checkForCorrectType(char type);
+	string* parseLine(string line, int& size);
+	void putMovesFileInStringArr();
 };

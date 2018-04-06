@@ -16,7 +16,7 @@ void main(int argc,char* argv[])
 	for (i = 1; i < argc && legal; i++)
 	{
 		
-		if (argv[i] == "-queit")
+		if (argv[i] == "-quiet")
 			quiet = true;
 		else if (argv[i] == "-show-all")
 			showAll = true;
@@ -53,9 +53,9 @@ void main(int argc,char* argv[])
 
 
 	
-	
-	Player player1("test.txt", 1);
-	player1.readFromFile();
+	TheGame theGame;
+	theGame.run();
+
 	
 
 }

@@ -1,13 +1,9 @@
 #include "TheGame.h"
 
-TheGame::TheGame()
-{
-	winner = 0;
-}
 
 void TheGame::init()
 {
-
+	bool goodToInitBoard = true;
 	//loop for
 	for (int i = 0; i < 2; i++)
 	{
@@ -15,14 +11,15 @@ void TheGame::init()
 		if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
 		{
 			p[i].checkValidityiPieces();
-			if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
-			{
-				p[i].setBoard();
-			}
+			if (p[i].status != noReason)
+				goodToInitBoard = false;
 		}
-		if (p[i].status != noReason)
-			p[abs(i - 1)].win = true;
+		else
+			goodToInitBoard = false;
+		/*if (p[i].status != noReason)
+			p[abs(i - 1)].win = true;*/ // Omer - I didn't understand the meaning of this.
 	}	
+	if (goodToInitBoard)
 		initStartBoard();
 }
 
@@ -33,22 +30,22 @@ void TheGame::initStartBoard()
 	int i, j, res;
 	for (i = 0; i < N; i++)
 	{
-		for (i = 0; i < M; i++)
+		for (j = 0; j < M; j++)
 		{
-			if ((p[0].playerBoard[i][j].getPieceType != '-') && (p[1].playerBoard[i][j].getPieceType != '-'))
+			if ((p[0].playerBoard[i][j].getPieceType() != '-') && (p[1].playerBoard[i][j].getPieceType() != '-'))
 			{
 				res = pieceFight(i, j);
 				if (res == 0) //It means that both players lost
-					this->gameBoard[i][j].setPieceType = '-';
+					this->gameBoard[i][j].setPieceType('-');
 				if (res==1) ///It means that player 1 wins in this square
-					this->gameBoard[i][j].setPieceJoker = p[0].playerBoard[i][j].getPieceType;
+					this->gameBoard[i][j].setPieceType(p[0].playerBoard[i][j].getPieceType());
 				else if (res==2) //It means that player 1 wins in this square
-					this->gameBoard[i][j].setPieceJoker = p[1].playerBoard[i][j].getPieceType;
+					this->gameBoard[i][j].setPieceType(p[1].playerBoard[i][j].getPieceType());
 			}
-			else if (p[0].playerBoard[i][j].getPieceType != '-')
-				this->gameBoard[i][j].setPieceJoker = p[0].playerBoard[i][j].getPieceType;
-			else if (p[1].playerBoard[i][j].getPieceType != '-')
-				this->gameBoard[i][j].setPieceJoker = p[1].playerBoard[i][j].getPieceType;
+			else if (p[0].playerBoard[i][j].getPieceType() != '-')
+				this->gameBoard[i][j].setPieceType(p[0].playerBoard[i][j].getPieceType());
+			else if (p[1].playerBoard[i][j].getPieceType() != '-')
+				this->gameBoard[i][j].setPieceType(p[1].playerBoard[i][j].getPieceType());
 
 		}
 	}
@@ -57,128 +54,134 @@ void TheGame::initStartBoard()
 int TheGame::pieceFight(int i, int j)
 {  // The function gets two indexes and checks which piece is stronger, erases the second piece, 
 	//updates the number of tools, returns 0 if a tie, 1 if the first player wins, and 2 if the second player is analyzed
-	char typePlayer1 = p[0].playerBoard[i][j].getPieceType;
-	char typePlayer2 = p[1].playerBoard[i][j].getPieceType;
+	char typePlayer1 = p[0].playerBoard[i][j].getPieceType();
+	char typePlayer2 = p[1].playerBoard[i][j].getPieceType();
 	switch (typePlayer1)
 	{
 	case 'R':
 		if (typePlayer2 == 'S')
 		{
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[S]--;
 			return 1;
 		}
-		if (typePlayer2 == 'P')
+		else if (typePlayer2 == 'P')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[R]--;
 			return 2;
 		}
-		if (typePlayer2 == 'R')
+		else if (typePlayer2 == 'R')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[R]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[R]--;
 			return 0;
 		}
-		if (typePlayer2 == 'B')
+		else if (typePlayer2 == 'B')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[R]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[B]--;
 			return 0;
 		}
-		if (typePlayer2 == 'F')
+		else if (typePlayer2 == 'F')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[R]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[F]--;
 			return 2;
 		}
+		else
+			return -1;
 		break;
 	case 'S':
 		if (typePlayer2 == 'R')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[S]--;
 			return 2;
 		}
-		if (typePlayer2 == 'P')
+		else if (typePlayer2 == 'P')
 		{
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[P]--;
 			return 1;
 		}
-		if (typePlayer2 == 'S')
+		else if (typePlayer2 == 'S')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[S]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[S]--;
 			return 0;
 		}
-		if (typePlayer2 == 'B')
+		else if (typePlayer2 == 'B')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[S]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[B]--;
 			return 0;
 		}
-		if (typePlayer2 == 'F')
+		else if (typePlayer2 == 'F')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[S]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[F]--;
 			return 2;
 		}
+		else
+			return -1;
 		break;
 	case 'P':
 		if (typePlayer2 == 'S')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[P]--;
 			return 2;
 		}
-		if (typePlayer2 == 'R')
+		else if (typePlayer2 == 'R')
 		{
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[R]--;
 			return 1;
 		}
-		if (typePlayer2 == 'P')
+		else if (typePlayer2 == 'P')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[P]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[P]--;
 			return 0;
 		}
-		if (typePlayer2 == 'B')
+		else if (typePlayer2 == 'B')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[P]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[B]--;
 			return 0;
 		}
-		if (typePlayer2 == 'F')
+		else if (typePlayer2 == 'F')
 		{
-			p[0].playerBoard[i][j].setPieceType = '-';
+			p[0].playerBoard[i][j].setPieceType('-');
 			p[0].counterPieces[P]--;
-			p[1].playerBoard[i][j].setPieceType = '-';
+			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[F]--;
 			return 2;
 		}
+		else 
+			return -1;
 		break;
 	case 'B':
-		p[0].playerBoard[i][j].setPieceType = '-';
+		p[0].playerBoard[i][j].setPieceType('-');
 		p[0].counterPieces[B]--;
-		p[1].playerBoard[i][j].setPieceType = '-';
+		p[1].playerBoard[i][j].setPieceType('-');
 		if (typePlayer2 == 'S')
 			p[1].counterPieces[S]--;
 		else if (typePlayer2 == 'R')
@@ -192,9 +195,9 @@ int TheGame::pieceFight(int i, int j)
 		return 0;
 		break;
 	case 'F':
-		p[0].playerBoard[i][j].setPieceType = '-';
+		p[0].playerBoard[i][j].setPieceType('-');
 		p[0].counterPieces[F]--;
-		p[1].playerBoard[i][j].setPieceType = '-';
+		p[1].playerBoard[i][j].setPieceType('-');
 		if (typePlayer2 == 'S')
 			p[1].counterPieces[S]--;
 		else if (typePlayer2 == 'R')
@@ -212,6 +215,8 @@ int TheGame::pieceFight(int i, int j)
 			
 		return 1;
 		break;
+	default:
+		return -1;
 	}
 
 
@@ -255,7 +260,7 @@ void TheGame::run()
 
 void TheGame::move()
 {
-
+	cout << "check";
 }
 /*void TheGame::initStartBoard()
 {
