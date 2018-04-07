@@ -8,6 +8,7 @@ void TheGame::init()
 
 	p[0].setInputFile("test.text");
 	p[0].setMoveFile("testmove.txt");
+	p[0].putMovesFileInStringArr();
 	p[1].setInputFile("test2.text");
 
 	bool goodToInitBoard = true;
@@ -57,8 +58,8 @@ int TheGame::pieceFight(int i, int j)
 	//updates the number of tools, returns 0 if a tie, 1 if the first player wins, and 2 if the second player is analyzed
 	char typePlayer1 = p[0].playerBoard[i][j].getPieceType();
 	char typePlayer2 = p[1].playerBoard[i][j].getPieceType();
-	bool jokerPlayer1 = p[0].playerBoard[i][j].getPieceJoker;
-	bool jokerPlayer2 = p[1].playerBoard[i][j].getPieceJoker;
+	bool jokerPlayer1 = p[0].playerBoard[i][j].getPieceJoker();
+	bool jokerPlayer2 = p[1].playerBoard[i][j].getPieceJoker();
 	switch (typePlayer1)
 	{
 	case 'R':

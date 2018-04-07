@@ -3,17 +3,13 @@
 using namespace std;
 
 
-Player::Player(string vStartGameFile, string vMovesFile, int nPlayer) //Constructor
+Player::Player() //Constructor
 {
-
 	status = noReason;
-	startGameFile = vStartGameFile;
-	movesFile = vMovesFile;
 	// Need to complete numOfMovingPieces =
 	//playerNum = nPlayer;
 	for (int i = 0; i < 6; i++)
 		counterPieces[i] = 0;
-	putMovesFileInStringArr();
 	error = noError;
 	errorLine = 0;
 	win = false;
@@ -226,7 +222,7 @@ void Player::readFromFile()
 				}
 				this->playerBoard[xLocation][yLocation].setPieceType(type);
 			
-				if (playerBoard[xLocation][yLocation].getPieceJoker)
+				if (playerBoard[xLocation][yLocation].getPieceJoker())
 				{
 					countPieces(J);
 

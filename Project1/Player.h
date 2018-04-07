@@ -55,7 +55,7 @@ public:
 	//void removePiece(); Guy- we need this?
 	void countPieces(char type);
 	bool checkXYInRange(int num,char cord);
-	Player(std::string vStartGameFile,std:: string vMovesFile,int nPlayer);
+	Player();
 	void checkForCorrectType(char type, int numOfRow);
 	string* parseLine(string line, int& size);
 	void putMovesFileInStringArr();
