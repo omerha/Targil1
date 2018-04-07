@@ -8,7 +8,7 @@ using namespace std;
 
 int main(int argc,char* argv[])
  {
-	//TheGame game;
+	TheGame game;
 	int i;
 	bool quiet=false, showAll=false, showInfo=false, showPlayer=false, delay=false;
 	int playerShow=0, timeToDelay=0;
@@ -53,8 +53,8 @@ int main(int argc,char* argv[])
 
 
 	
-
-	//game.run();
+	//game.init();
+	game.run();
 
 	
 
