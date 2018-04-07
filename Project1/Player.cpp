@@ -76,7 +76,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		currY = stoi(currInput[1]);
 		newX = stoi(currInput[2]);
 		newY = stoi(currInput[3]);
-		if (!(checkXYInRange(currX, 'X') || checkXYInRange(newX, 'X') || checkXYInRange(newY, 'Y') || checkXYInRange(currY, 'Y')))
+		if (!(checkXYInRange(currX, 'X') && checkXYInRange(newX, 'X') && checkXYInRange(newY, 'Y') && checkXYInRange(currY, 'Y')))
 		{
 			setPlayerStatus(badMoves, notInRange, moveNum); //error x y not in range.
 			return false;
@@ -243,10 +243,6 @@ void Player::readFromFile()
 				setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
 
 		delete[] getInput;
-	}
-	if (numOfRows == 1)
-	{
-		setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
 	}
 }
 

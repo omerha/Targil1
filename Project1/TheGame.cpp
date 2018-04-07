@@ -383,11 +383,7 @@ void TheGame::run()
 	int moveNum = 0;
 	init();
 	checkForWinner();
-	if (winner)
-	{
-		createOutputFile();
-	}
-	else
+	if (winner==0)
 	{
 		drawGameBoard();
 		
@@ -419,6 +415,15 @@ void TheGame::move(int moveNum)
 		}
 		else {
 			cout << "got to else";//need to check for errors in players + set winner.
+			//the printing is just for cheaking
+			cout << "----The player number " << 1 << " -----\n";
+			cout << "the status: " << p[0].status << "\n";
+			cout << "the error: " << p[0].error << "\n";
+			cout << "the error line: " << p[0].errorLine << "\n";
+			cout << "----The player number " << 2 << " -----\n";
+			cout << "the status: " << p[1].status << "\n";
+			cout << "the error: " << p[1].error << "\n";
+			cout << "the error line: " << p[1].errorLine << "\n";
 		}
 
 	}
