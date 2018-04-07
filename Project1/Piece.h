@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-
+#include "Color.h"
 using namespace std;
 
 class Piece
@@ -61,7 +61,11 @@ public:
 	{
 		joker = pJoker;
 	}
+
 	void drawPiece(int xL,int yL);
+	void removePiece(int xL, int yL);
+	void drawPiece(Color color, int xL, int yL);
+	void drawUnknownPiece(Color color, int xL, int yL);
 	/*
 	void setPiecePlayerNum(int pPlayerNum)
 	{

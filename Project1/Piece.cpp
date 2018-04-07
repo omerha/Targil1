@@ -68,7 +68,7 @@ void Piece::drawPiece(int xL, int yL)
 {
 	gotoxy(xL*3, yL*2);
 	cout << pieceType;
-	for (int j = 1; j < 11; j++)
+/*	for (int j = 1; j < 11; j++)
 	{
 		for (int i = 1; i < 11; i++)
 		{
@@ -77,7 +77,28 @@ void Piece::drawPiece(int xL, int yL)
 			gotoxy(i * 3 + 2, j * 2);
 			cout << "|";
 		}
-
-	}
+	}*/
 
 }
+
+void Piece::removePiece(int xL, int yL)
+{
+	gotoxy(xL * 3, yL * 2);
+	cout << " ";
+}
+
+void Piece::drawPiece(Color color, int xL, int yL)
+{
+	setTextColor(color);
+	gotoxy(xL * 3, yL * 2);
+	cout << pieceType;
+}
+
+void Piece::drawUnknownPiece(Color color, int xL, int yL)
+{
+	setTextColor(color);
+	gotoxy(xL * 3, yL * 2);
+	cout << "U";
+}
+
+

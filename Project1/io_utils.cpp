@@ -1,6 +1,7 @@
 #pragma once
 
 #include "io_utils.h"
+
 using namespace std;
 
 #ifndef WINDOWS
@@ -23,7 +24,9 @@ void gotoxy(int x, int y)
 	SetConsoleCursorPosition(hConsoleOutput, dwCursorPosition);
 }
 
-
+void setTextColor(Color colorToSet) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)colorToSet);
+}
 void hideCursor()
 {
 	HANDLE myconsole = GetStdHandle(STD_OUTPUT_HANDLE);

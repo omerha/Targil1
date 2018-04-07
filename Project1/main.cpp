@@ -5,57 +5,73 @@ using namespace std;
 #include "TheGame.h"
 #include "Player.h"
 
-
-int main(int argc,char* argv[])
+bool isDigit(char* c);
+void main(int argc,char* argv[])
  {
-	//TheGame game;
+	TheGame theGame;
 	int i;
-	bool quiet=false, showAll=false, showInfo=false, showPlayer=false, delay=false;
-	int playerShow=0, timeToDelay=0;
+	bool  showOnlyKnownInfo=false;
+	int playerShow=3, timeToDelay=0;
 	bool legal = true;
 	for (i = 1; i < argc && legal; i++)
 	{
-		
-		if (argv[i] == "-quiet")
-			quiet = true;
-		else if (argv[i] == "-show-all")
-			showAll = true;
-		else if (argv[i] == "-show-only-know-info")
-			showInfo = true;
-		else if (argv[i] == "-show")
+		if (!strcmp(argv[i], "-quiet"))
+			playerShow = 0;
+		else if (!strcmp(argv[i], "-show-all"))
+			playerShow = 3;
+		else if (!strcmp(argv[i], "-show-only-know-info"))
+			showOnlyKnownInfo = true;
+		else if (!strcmp(argv[i], "-show"))
 		{
-			showPlayer = true;
-			playerShow = (int)argv[i + 1];
-			i++;
+			if (isDigit(argv[i + 1]))
+			{
+				playerShow = atoi(argv[i + 1]);
+				i++;
+			}
+			else
+				legal = false;
 		}
-		else if (argv[i] == "-delay")
+		else if (!strcmp(argv[i], "-delay"))
 		{
-			delay = true;
-			timeToDelay = (int)argv[i + 1];
-			i++;
+			if (isDigit(argv[i + 1]))
+			{
+				timeToDelay = atoi(argv[i + 1]);
+				i++;
+			}
+			else
+				legal = false;
 		}
-	
-		else legal = false;
+		else
+			legal = false;
 	}
 	if (!legal)
 		cout << "one of the arguments not legal";
 	
-	else if (quiet && (showAll || showInfo || showPlayer || delay))
+	else if (!playerShow && (showOnlyKnownInfo || timeToDelay || playerShow))
 		cout << "You can't insert presentation mode arguments and non-presentation mode arguments together";
-
-	if (!quiet && !showAll && !showInfo && !showPlayer) //	Default presentation mode is show-all
+	else
+	{
+		theGame.setDelayMode(timeToDelay);
+		theGame.setShowMode(playerShow);
+		theGame.setUnkownInfoMode(showOnlyKnownInfo);
+	}
+	/*if (!quiet && !showAll && !showInfo && !showPlayer) //	Default presentation mode is show-all
 	{
 		showAll = true;
 		delay = true;
 		if (timeToDelay = 0)
 			timeToDelay = 50;
-	}
+	}*/
+		
 
+	theGame.run();
+}
 
-	
-
-	//game.run();
-
-	
-
+bool isDigit(char* c)
+{
+	int len = strlen(c);
+	for (int i = 0; i < len; i++)
+		if (!('0' <= c[i] && c[i] <= '9'))
+			return false;
+	return true;
 }

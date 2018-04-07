@@ -5,12 +5,12 @@ void TheGame::init()
 {
 	p[0].setColor(YELLOW);
 	p[1].setColor(RED);
-
-	p[0].setInputFile("test.text");
+	p[0].setInputFile("test.txt");
 	p[0].setMoveFile("testmove.txt");
 	p[0].putMovesFileInStringArr();
-	p[1].setInputFile("test2.text");
-
+	p[1].setInputFile("test2.txt");
+	p[1].setMoveFile("testmove2.txt");
+	p[1].putMovesFileInStringArr();
 	bool goodToInitBoard = true;
 
 	//All this need to be in function ReadInputFiles
@@ -299,11 +299,21 @@ int TheGame::pieceFight(int i, int j)
 void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)
 {
 	if (fightResult == 0) //It means that both players lost
+	{
 		this->gameBoard[xLoc][yLoc].setPieceType('-');
+		p[0].playerBoard[xLoc][yLoc].setPieceType('-');
+		p[1].playerBoard[xLoc][yLoc].setPieceType('-');
+	}
 	if (fightResult == 1) ///It means that player 1 wins in this square
+	{
 		this->gameBoard[xLoc][yLoc].setPieceType(p[0].playerBoard[xLoc][yLoc].getPieceType());
-	else if (fightResult == 2) //It means that player 1 wins in this square
+		p[1].playerBoard[xLoc][yLoc].setPieceType('-');
+	}
+	else if (fightResult == 2) //It means that player 2 wins in this square
+	{
 		this->gameBoard[xLoc][yLoc].setPieceType(p[1].playerBoard[xLoc][yLoc].getPieceType());
+		p[0].playerBoard[xLoc][yLoc].setPieceType('-');
+	}
 }
 
 void TheGame::checkForWinner() 
@@ -345,17 +355,21 @@ void TheGame::run()
 	int moveNum = 0;
 	init();
 	checkForWinner();
-	if (winner==0)
+	if (winner)
+	{
+		createOutputFile();
+	}
+	else
 	{
 		drawGameBoard();
+		
 	}
-
-
 	while (!winner)
 	{
 		move(moveNum++);
 		checkForWinner();
 	}
+		createOutputFile();
 }
 
 void TheGame::move(int moveNum)
@@ -372,7 +386,7 @@ void TheGame::move(int moveNum)
 			{
 				gameBoard[jokerX][jokerY].setPieceType(newJokerType);
 			}
-			movePiece(oldX, oldY, newX, newY);
+			movePiece(oldX, oldY, newX, newY,i);
 			checkForWinner();
 		}
 		else {
@@ -382,9 +396,9 @@ void TheGame::move(int moveNum)
 	}
 }
 
-void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY)
+void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY, int playerNum)
 {
-	int fightRes;
+	int fightRes = -1;
 	if (gameBoard[newX][newY].getPieceType() != '-')//there is a piece already in this place - fight!
 	{
 		fightRes = pieceFight(newX, newY);
@@ -395,11 +409,70 @@ void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, co
 		gameBoard[newX][newY].setPieceType(gameBoard[oldX][oldY].getPieceType());
 		gameBoard[oldX][oldY].setPieceType('-');
 	}
+	if (showMode != QUIET_MODE)
+	{
+		drawPiece(oldX, oldY, newX, newY, playerNum,fightRes);
+	}
+}
+
+void TheGame::drawPiece(const int & oldX, const int & oldY, const int & newX, const int & newY, int playerNum,int fightResult)
+{
+	int secondPlayerIndex = abs(playerNum -1);
+	if (showMode == SHOWALL_MODE)
+	{
+		if (fightResult != -1) {
+			if (fightResult == TIE)
+			{
+				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+				p[secondPlayerIndex].playerBoard[newX][newY].removePiece(newX, newY);
+			}
+			else if (fightResult == playerNum)
+			{
+				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+				p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
+			}
+			else
+			{
+				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+			}
+		}
+		else
+		{
+			p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+			p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
+		}
+	}
+	else if (showMode == playerNum)
+	{
+		if (fightResult != -1) {
+			if (fightResult - 1 == playerNum)
+			{
+				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+				p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
+			}
+			else
+			{
+				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+			}
+		}
+		else
+		{
+			p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
+			p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
+		}
+	}
+	else {
+		if (!(fightResult - 1 == secondPlayerIndex))
+		{
+			p[secondPlayerIndex].playerBoard[newX][newY].removePiece(newX, newY);
+		}
+
+	}
 }
 
 void TheGame::drawGameBoard()
 {
-	for (int i = 1; i <= N; i++)
+/*	for (int i = 1; i <= N; i++)
 	{
 		for (int j = 1; j <= M; j++)
 		{
@@ -408,7 +481,48 @@ void TheGame::drawGameBoard()
 				gameBoard[i][j].drawPiece(i,j);
 			}
 		}
+	}*/
+	for (int player = 0; player < numOfPlayers; player++) {
+		for (int i = 1; i <= N; i++)
+		{
+			for (int j = 1; j <= M; j++)
+			{
+				if (p[player].playerBoard[i][j].getPieceType() != '-')
+				{
+					if (showOnlyKnownInfo)
+						p[player].playerBoard[i][j].drawUnknownPiece(p[player].color, i, j);
+					else
+						p[player].playerBoard[i][j].drawPiece(p[player].color, i, j);
+				}
+			}
+		}
 	}
 }
 
-
+void TheGame::createOutputFile()
+{
+	ofstream outfile("output.txt");
+	if (outfile.is_open())
+	{
+		outfile << "Winner: " << winner << "\n";
+		outfile << "Reason: " << "\n";
+		for (int j = 1; j < 11; j++)
+		{
+			outfile << "|";
+			for (int i = 1; i < 11; i++)
+			{
+				if (gameBoard[i][j].getPieceType() != '-')
+				{
+					outfile << " " << gameBoard[i][j].getPieceType() << " |";
+				}
+				else
+					outfile << "   |";
+			}
+			outfile << "\n";
+		}
+		outfile.close();
+	}
+	else {
+		//file error
+	}
+}
