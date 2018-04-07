@@ -2,28 +2,6 @@
 
 using namespace std;
 
-/*
-void Player::setBoard()
-{
-	int i;
-	int xCoordinate, yCoordinate;
-	char type;
-
-	for (i = 0; i < K; i++)
-	{
-		xCoordinate = this->playerPieces[i].x;
-		yCoordinate = this->playerPieces[i].y;
-		type = xCoordinate = this->playerPieces[i].pieceType;
-		if (this->playerBoard[xCoordinate - 1][yCoordinate - 1] != '-')
-		{
-			this->status = badPosition;
-			return;
-		}
-		else this->playerBoard[xCoordinate-1][yCoordinate-1] = type;
-	}
-
-}
-*/
 
 Player::Player(string vStartGameFile, string vMovesFile, int nPlayer) //Constructor
 {
@@ -45,7 +23,7 @@ void Player::checkForCorrectType(char type, int numOfRow)
 {
 	if ((type != 'R') && (type != 'P') && (type != 'S') && (type != 'B') && (type != 'F'))
 	{
-		setStatusPlayer(badPosition, unKnownPiece, numOfRow);
+		setPlayerStatus(badPosition, unKnownPiece, numOfRow);
 	}
 }
 string* Player::parseLine(string line, int& size)
@@ -110,10 +88,10 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		if (playerBoard[currX][currY].getPieceType() == '-')
 		{
 			setPlayerStatus(badMoves, notExistPiece, moveNum); //error the player is trying to move a piece that does not exist.
-			//movePlayerError(moveNum);
+
 			return false;
 		}
-		if (numOfIndex > 6)//means there is a move for the joker. //why not equal to 6???
+		if (numOfIndex > 6)//means there is a move for the joker. 
 		{
 			if (currInput[4].length() == 2)
 			{
@@ -144,7 +122,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 				}
 				else //Guy- whay this mean this else?
 				{
-					movePlayerError(moveNum);
+					setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
 					return false;
 				}
 			}
@@ -203,14 +181,13 @@ void Player::readFromFile()
 		{
 			inputIndex = 0;
 		    getInput = parseLine(tmpRead, inputIndex); 
-			if (inputIndex>=3) //Guy- we need th check just if is equal to 3 and not if he bigger then 3, no?
+			if ((inputIndex == 3) || (inputIndex == 4))
 			{
-				//////////////All this we cand doing not in the if
 				type = getInput[0][0];
 				xLocation = stoi(getInput[1]);
-				
+
 				yLocation = stoi(getInput[2]);
-				
+
 				if (!(checkXYInRange(yLocation, 'Y') || checkXYInRange(xLocation, 'X')))
 				{
 					setPlayerStatus(badPosition, notInRange, numOfRows);
@@ -223,46 +200,54 @@ void Player::readFromFile()
 				}
 				this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
 				this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
-				/////////////////until This
 
-				if (getInput[0][0] == 'J') //Guy- why we don't check the size- if is equal to 4 in elseif?
+
+				if (getInput[0][0] == 'J') 
 				{
 					if (inputIndex == 4)
 					{
 						playerBoard[xLocation][yLocation].setPieceJoker(true);
 						type = getInput[3][0];
-						countPieces('J');
+
 					}
 					else
 					{
-						
-						status = badPosition;
-						errorLine = numOfRows;
-						return;//wrong input of joker
+
+						setPlayerStatus(badPosition, wrongInputJoker, numOfRows); 
+						return;
 					}
 				}
-				checkForCorrectType(type,numOfRows);
+
+				checkForCorrectType(type, numOfRows);
 				//If the piece type isn't one of the pieces in the game
 				if (status != noReason)
 				{
 					return;
 				}
 				this->playerBoard[xLocation][yLocation].setPieceType(type);
-				//this->playerPieces[numOfPieces].setPiecePlayerNum(this->playerNum);
-				countPieces(type);
+			
+				if (playerBoard[xLocation][yLocation].getPieceJoker)
+				{
+					countPieces(J);
+
+				}
+				else
+				{
+					countPieces(type);
+				}
+
 			}
 			else
-				cout << "error input";
-			//error spliting line
+				setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
 		}
 		else
-			cout << "error input";
-		//error input
+			setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
+
 		delete[] getInput;
 	}
 	if (numOfRows == 0)
 	{
-		//File is empty = add relevatn error.
+		setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
 	}
 }
 

@@ -332,7 +332,11 @@ void TheGame::checkForWinner()
 		this->winner = 1; //The game is over and player 1 win
 	else if (p[1].win)
 		this->winner = 2; //The game is over and player 2 win
-
+	if (winner != 0)
+	{
+		//createOutputFile();
+		//printToScreen();
+	}
 }
 
 void TheGame::run()
@@ -340,16 +344,9 @@ void TheGame::run()
 	int moveNum = 0;
 	init();
 	checkForWinner();
-	if (winner)
-	{
-		createOutputFile();
-		printToScreen();
-
-	}
-	else
+	if (winner==0)
 	{
 		drawGameBoard();
-
 	}
 
 

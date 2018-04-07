@@ -4,6 +4,7 @@
 #include "Piece.h"
 #include "Reason.h"
 #include "Error.h"
+#include "Color.h"
 #define M 10 //colums
 #define N 10 // rows
 #define K 13 // The num of pieces of each player

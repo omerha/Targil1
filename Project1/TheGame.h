@@ -26,6 +26,6 @@ public:
 	void move(int moveNum);
 	void movePiece(const int& oldX, const int& oldY, const int& newX, const int& newY);
 	void drawGameBoard();
-	void createOutputFile();
-	void printToScreen();
+	//void createOutputFile();
+	//void printToScreen();
 };

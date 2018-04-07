@@ -12,5 +12,7 @@ enum Error
 	wrongFormatRowInputFile=7,
 	wrongFrormatRowMoveFile=8,
 	notExistPiece=9,
-	notExistJoker=10
+	notExistJoker=10,
+	wrongInputJoker=11,
+	emptyFile=12
 };

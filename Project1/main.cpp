@@ -6,9 +6,9 @@ using namespace std;
 #include "Player.h"
 
 
-void main(int argc,char* argv[])
+int main(int argc,char* argv[])
  {
-	
+	//TheGame game;
 	int i;
 	bool quiet=false, showAll=false, showInfo=false, showPlayer=false, delay=false;
 	int playerShow=0, timeToDelay=0;
@@ -53,8 +53,8 @@ void main(int argc,char* argv[])
 
 
 	
-	TheGame theGame;
-	theGame.run();
+
+	//game.run();
 
 	
 
