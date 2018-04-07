@@ -213,7 +213,10 @@ void Player::readFromFile()
 						return;
 					}
 				}
-
+				if ((inputIndex == 0) && (numOfMoves == 1))
+				{
+					setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
+				}
 				checkForCorrectType(type, numOfRows);
 				//If the piece type isn't one of the pieces in the game
 				if (status != noReason)
@@ -234,14 +237,14 @@ void Player::readFromFile()
 
 			}
 			else
-				setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
+					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
 		}
 		else
-			setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
+				setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
 
 		delete[] getInput;
 	}
-	if (numOfRows == 0)
+	if (numOfRows == 1)
 	{
 		setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
 	}
@@ -261,7 +264,7 @@ void Player::checkValidityiPieces()
 		setPlayerStatus(badPosition, tooManyPieces, 0); //-	A PIECE type appears in file more than its number
 
 	}
-	if (counterPieces[F] != 1)
+	if (counterPieces[F] < 1)
 	{
 		setPlayerStatus(badPosition, noFlag, 0); // Missing flag
 	}

@@ -5,6 +5,10 @@ void TheGame::init()
 {
 	p[0].setColor(YELLOW);
 	p[1].setColor(RED);
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 	p[0].setInputFile("test.txt");
 	p[0].setMoveFile("testmove.txt");
 	p[0].putMovesFileInStringArr();
@@ -16,7 +20,9 @@ void TheGame::init()
 	//All this need to be in function ReadInputFiles
 	for (int i = 0; i < this->numOfPlayers; i++)
 	{
+		goodToInitBoard = true;
 		p[i].readFromFile();
+
 		if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
 		{
 			p[i].checkValidityiPieces();
@@ -26,6 +32,19 @@ void TheGame::init()
 		else
 			goodToInitBoard = false;
 	}	
+	
+	 // The printing is just for checking the status and the error print after reading the input file
+	cout << "----The player number " << 1 << " -----\n";
+	cout << "the status: " << p[0].status << "\n";
+
+	cout << "the error: " << p[0].error << "\n";
+	cout << "the error line: " << p[0].errorLine << "\n";
+	cout << "----The player number " << 2 << " -----\n";
+	cout << "the status: " << p[1].status << "\n";
+
+	cout << "the error: " << p[1].error << "\n";
+	cout << "the error line: " << p[1].errorLine << "\n";
+	
 	if (goodToInitBoard)
 		initStartBoard();
 }
@@ -41,7 +60,12 @@ void TheGame::initStartBoard()
 		{
 			if ((p[0].playerBoard[i][j].getPieceType() != '-') && (p[1].playerBoard[i][j].getPieceType() != '-'))
 			{
+				
 				res = pieceFight(i, j);
+				//The printing is just to check whice piece win in the fight
+				cout << "we are fighting in square: " << i << "*" << j << "\n";
+				cout << "the winner is: " << res << "\n";
+
 				setFightResult(res, i, j);
 			}
 			else if (p[0].playerBoard[i][j].getPieceType() != '-')
@@ -51,6 +75,7 @@ void TheGame::initStartBoard()
 
 		}
 	}
+	
 }
 
 int TheGame::pieceFight(int i, int j)
@@ -235,10 +260,13 @@ int TheGame::pieceFight(int i, int j)
 		else if (typePlayer2 == 'F')
 		{
 			p[0].playerBoard[i][j].setPieceType('-');
-			p[0].counterPieces[P]--;
+			if (jokerPlayer1)
+				p[0].counterPieces[J]--;
+			else
+				p[0].counterPieces[P]--;
 			p[1].playerBoard[i][j].setPieceType('-');
 			p[1].counterPieces[F]--;
-			return 2;
+			return 1;
 		}
 		break;
 	case 'B': //The two pieces lose
