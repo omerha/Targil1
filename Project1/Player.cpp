@@ -67,7 +67,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 	if (moveNum < numOfMoves)
 	{
 		currInput = parseLine(movesArr[moveNum], numOfIndex);
-		if (numOfIndex < 3 || numOfIndex>7)
+		if (numOfIndex < 4 || numOfIndex>8)
 		{
 			setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum); //error - too many or too few arguments in line.
 			return false;
@@ -81,6 +81,14 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			setPlayerStatus(badMoves, notInRange, moveNum); //error x y not in range.
 			return false;
 		}
+		if ((abs(currX - newX) > 1) || (abs(currY - newY) > 1))
+		{
+			setPlayerStatus(badMoves, moveIllegal, moveNum);
+		}
+		if (((abs(currX - newX) == 1) && (abs(currY - newY) == 1)) && ((currX!=newX)&&(currY!=newY)))
+		{
+			setPlayerStatus(badMoves, moveIllegal , moveNum);
+		}
 		if (playerBoard[currX][currY].getPieceType() == '-')
 		{
 			setPlayerStatus(badMoves, notExistPiece, moveNum); //error the player is trying to move a piece that does not exist.
@@ -91,7 +99,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		{
 			if (currInput[4].length() == 2)
 			{
-				if (currInput[4][1] == 'J')
+				if (currInput[4][0] == 'J')
 				{
 					int xJoker = stoi(currInput[5]);
 					int yJoker = stoi(currInput[6]);
@@ -99,15 +107,24 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 					if (!(checkXYInRange(xJoker, 'X') || checkXYInRange(yJoker, 'Y')))//Something is wrong with joker xy. //Guy- this mean joker not in range?
 					{
 						setPlayerStatus(badMoves, notInRange, moveNum);
-						//movePlayerError(moveNum);
 						return false;
 					}
-					else if (playerBoard[xJoker][yJoker].getPieceJoker())
+					else if (playerBoard[currX][currY].getPieceJoker())
 					{
-						playerBoard[xJoker][yJoker].setPieceType(nJokerType);
-						jokerXLocation = xJoker;
-						jokerYLocation = yJoker;
-						newJokerType = nJokerType;
+						if ((nJokerType != 'P') && (nJokerType != 'R') && (nJokerType != 'S') && (nJokerType != 'B'))
+						{
+							setPlayerStatus(badMoves, wrongInputJoker, moveNum);
+							return false;
+						}
+						else
+						{
+							playerBoard[newX][newY].setPieceJoker(true);
+							playerBoard[xJoker][yJoker].setPieceType(nJokerType);
+							jokerXLocation = xJoker;
+							jokerYLocation = yJoker;
+							newJokerType = nJokerType;
+						}
+
 					}
 					else
 					{
@@ -116,16 +133,16 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 						return false;
 					}
 				}
-				else //Guy- whay this mean this else?
+				else //The wrong is for example: "K:" insted of "J:"
 				{
 					setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
 					return false;
 				}
 			}
-			else// I am assuming that the joker is written like this - [J:
+			else //The wrong, for example: "J::" insted of "J:"
 			{
 				setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
-				//movePlayerError(moveNum);//TODO:something is wrong with the line..
+				
 				return false;
 			}
 		}
@@ -143,11 +160,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 	delete[] currInput;
 }
 
-/*void Player::movePlayerError(int lineNum)  //Guy- we need this???
-{
-	error = errorInMoveFiles;
-	errorLine = lineNum;
-}*/
+
 void Player::setPlayerStatus(Reason reason, Error theError, int line) 
 {
 	status = reason;
@@ -209,7 +222,7 @@ void Player::readFromFile()
 					else
 					{
 
-						setPlayerStatus(badPosition, wrongInputJoker, numOfRows); 
+						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); 
 						return;
 					}
 				}
@@ -227,7 +240,7 @@ void Player::readFromFile()
 			
 				if (playerBoard[xLocation][yLocation].getPieceJoker())
 				{
-					countPieces(J);
+					countPieces('J');
 
 				}
 				else
@@ -315,4 +328,71 @@ bool Player::checkXYInRange(int num,char cord)
 		}
 	}
 	return true;
+}
+
+void Player::printError()
+{
+	switch (error)
+	{
+	case 1:
+		if (status == badPosition)
+			cout << "The coordinates in line:" << errorLine << " in the input file not in the range of the board\n";
+		else
+			cout << "The coordinates in line:" << errorLine << " in the move file not in the range of the board\n";
+		break;
+	case 2:
+		cout << "The coordinates that inseted in line:" << errorLine << " in the input file already have a piece in the board\n";
+		break;
+	case 3:
+		cout << "Too many pieces of the same type were inserted in the input file\n";
+		break;
+	case 4:
+		cout << "No flag was inserted in the input file\n";
+		break;
+	case 5:
+		cout << "Unknow piece was inserted in line:" << errorLine << " in the input file\n";
+		break;
+	case 6:
+		cout << "Too many rows inserted in the input file in line:" << errorLine << "\n";
+		break;
+	case 7:
+		cout << "The format of row " << errorLine << " in the input file is invalid\n";
+		break;
+	case 8:
+		cout << "The format of row " << errorLine << " in the move file is invalid\n";
+		break;
+	case 9:
+		cout << "Piece not exist in the place that inserted in line " << errorLine << " in the move file\n";
+		break;
+	case 10:
+		cout << "Joker not exist in the place that inserted in line " << errorLine << " in the move file\n";
+		break;
+	case 11:
+		cout << "Joker changed in row" << errorLine << " into a piece that didn't exist in the move file \n";
+		break;
+	case 12:
+		cout << "The input file is empty\n";
+		break;
+	case 13:
+		cout << "Move a piece in an illegal way in line " << errorLine << " in the move file \n";
+		break;
+	default:
+		cout << "Not exsit errors to this player\n";
+		break;
+	}
+}
+void Player::hideJoker()
+{
+	int counterJoker = 0;
+	for (int i = 1; i <= N && counterJoker < counterPieces[J]; i++)
+	{
+		for (int j = 1; j <= M && counterJoker < counterPieces[J]; j++)
+		{
+			if (playerBoard[i][j].getPieceJoker())
+			{
+				playerBoard[i][j].setRevealJokerStatus(false);
+				counterJoker++;
+			}
+		}
+	}
 }

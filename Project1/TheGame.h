@@ -32,7 +32,7 @@ public:
 	void drawPiece(const int & oldX, const int & oldY, const int & newX, const int & newY, int playerNum, int fightResult);
 	void drawGameBoard();
 	void createOutputFile();
-	//void printToScreen();
+	void printToScreen();
 	void setShowMode(int whoToShow)// 2 is all 1 is player 2 0 is player 1 and -1 is none aka quiet.
 	{
 		showMode= whoToShow - 1;
@@ -45,4 +45,5 @@ public:
 	{
 		showOnlyKnownInfo = unkownInfoMode;
 	}
+	void drawBoardLines();
 };

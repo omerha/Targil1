@@ -73,4 +73,6 @@ public:
 	{
 		movesFile = fileName;
 	}
+	void printError();
+	void hideJoker();
 };

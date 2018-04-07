@@ -12,6 +12,7 @@ class Piece
 	int x, y;
 	char pieceType;
 	bool joker;
+	bool revealJoker = true;
 	//int playerNum; -- we need this for printing the common board.
 public: 
 
@@ -39,6 +40,10 @@ public:
 	{
 		return joker;
 	}
+	void setRevealJokerStatus(bool jokerStatus)
+	{
+		revealJoker = jokerStatus;
+	}
 	/*
 	int getPiecePlayerNum()
 	{
@@ -60,6 +65,10 @@ public:
 	void setPieceJoker(bool pJoker)
 	{
 		joker = pJoker;
+	}
+	bool getPieceJokerRevealStatus()
+	{
+		return revealJoker;
 	}
 
 	void drawPiece(int xL,int yL);
