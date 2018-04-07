@@ -8,11 +8,11 @@ using namespace std;
 bool isDigit(char* c);
 void main(int argc,char* argv[])
  {
-<<<<<<< HEAD
+
 	TheGame theGame;
-=======
+
 	TheGame game;
->>>>>>> master
+
 	int i;
 	bool  showOnlyKnownInfo=false;
 	int playerShow=3, timeToDelay=0;
@@ -65,18 +65,11 @@ void main(int argc,char* argv[])
 		delay = true;
 		if (timeToDelay = 0)
 			timeToDelay = 50;
-<<<<<<< HEAD
 	}*/
 		
-=======
-	}
-
-
 	
 	//game.init();
 	game.run();
->>>>>>> master
-
 	theGame.run();
 }
 

@@ -5,10 +5,10 @@ void TheGame::init()
 {
 	p[0].setColor(YELLOW);
 	p[1].setColor(RED);
-<<<<<<< HEAD
-=======
 
->>>>>>> master
+
+
+
 	p[0].setInputFile("test.txt");
 	p[0].setMoveFile("testmove.txt");
 	p[0].putMovesFileInStringArr();
