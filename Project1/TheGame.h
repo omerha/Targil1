@@ -5,10 +5,11 @@
 
 class TheGame
 {
-	int numOfPlayers = 2;
-	Player p[2] = {Player("test.txt","testmove.txt",1),Player("test2.txt","",2)}; //need to get the fileName
+	int numOfPlayers = 2; //Guy- we need this?
+	Player p[2];
+	//Player p[2] = {Player("test.txt","testmove.txt",1),Player("test2.txt","",2)}; //need to get the fileName
 	int winner;
-	Piece gameBoard[N+1][M+1];
+	Piece gameBoard[N+1][M+1]; //need to check if we actually need this board
 	Reason res;
 
 public:
@@ -18,11 +19,13 @@ public:
 	void checkForWinner();
 	int pieceFight(int i, int j);
 	void setFightResult(int fightResult, int xLoc, int yLoc);
-	TheGame()
+	TheGame() 
 	{
 		winner = 0;
 	};
 	void move(int moveNum);
 	void movePiece(const int& oldX, const int& oldY, const int& newX, const int& newY);
 	void drawGameBoard();
+	void createOutputFile();
+	void printToScreen();
 };

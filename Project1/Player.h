@@ -38,25 +38,38 @@ class Player
 	Reason status;
 	//int numOfMovingPieces;
 	//bool flagCaptured = false;
-	std::string startGameFile;
-	std::string movesFile;
+	std::string startGameFile; //Guy- we can change this name to InputFile?
+	std::string movesFile; //Guy- we can change this name to moveFile?
 	Error error;
 	int errorLine;
 	bool win;
 	string movesArr[100];
 	int numOfMoves = 0;
+	Color color;
 	//std::string error;
 public:
-	void readFromFile();//קוראת את הנתונים מהקובץ ומעדכנת את ה- player pieces
-	void setBoard();
+	void readFromFile();
+	//void setBoard(); Guy- we need this?
 	void checkValidityiPieces();
-	void removePiece();
+	//void removePiece(); Guy- we need this?
 	void countPieces(char type);
 	bool checkXYInRange(int num,char cord);
 	Player(std::string vStartGameFile,std:: string vMovesFile,int nPlayer);
-	void checkForCorrectType(char type);
+	void checkForCorrectType(char type, int numOfRow);
 	string* parseLine(string line, int& size);
 	void putMovesFileInStringArr();
 	bool move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType);
-	void movePlayerError(int lineNum);
+	//void movePlayerError(int lineNum); Guy- we need this?
+	void setPlayerStatus(Reason reason, Error theError, int line);
+	void setColor(Color c) {
+		color = c;
+	}
+	void setInputFile(string fileName)
+	{
+		startGameFile = fileName;
+	}
+	void setMoveFile(string fileName)
+	{
+		movesFile = fileName;
+	}
 };

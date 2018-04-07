@@ -41,12 +41,11 @@ Player::Player(string vStartGameFile, string vMovesFile, int nPlayer) //Construc
 	win = false;
 }
 
-void Player::checkForCorrectType(char type)
+void Player::checkForCorrectType(char type, int numOfRow)
 {
 	if ((type != 'R') && (type != 'P') && (type != 'S') && (type != 'B') && (type != 'F'))
 	{
-		status = badPosition;
-		error = unKnownPiece;
+		setStatusPlayer(badPosition, unKnownPiece, numOfRow);
 	}
 }
 string* Player::parseLine(string line, int& size)
@@ -96,8 +95,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		currInput = parseLine(movesArr[moveNum], numOfIndex);
 		if (numOfIndex < 3 || numOfIndex>7)
 		{
-			error = errorInMoveFiles;//TODO: error - too many or too few arguments in line.
-			errorLine = moveNum;
+			setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum); //error - too many or too few arguments in line.
 			return false;
 		}
 		currX = stoi(currInput[0]);
@@ -106,15 +104,16 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		newY = stoi(currInput[3]);
 		if (!(checkXYInRange(currX, 'X') || checkXYInRange(newX, 'X') || checkXYInRange(newY, 'Y') || checkXYInRange(currY, 'Y')))
 		{
-			movePlayerError(moveNum);//TODO:error x y not in range.
+			setPlayerStatus(badMoves, notInRange, moveNum); //error x y not in range.
 			return false;
 		}
 		if (playerBoard[currX][currY].getPieceType() == '-')
 		{
-			movePlayerError(moveNum);//TODO:error the player is trying to move a piece that does not exist.
+			setPlayerStatus(badMoves, notExistPiece, moveNum); //error the player is trying to move a piece that does not exist.
+			//movePlayerError(moveNum);
 			return false;
 		}
-		if (numOfIndex > 6)//means there is a move for the joker.
+		if (numOfIndex > 6)//means there is a move for the joker. //why not equal to 6???
 		{
 			if (currInput[4].length() == 2)
 			{
@@ -123,9 +122,10 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 					int xJoker = stoi(currInput[5]);
 					int yJoker = stoi(currInput[6]);
 					char nJokerType = currInput[7][0];
-					if (!(checkXYInRange(xJoker, 'X') || checkXYInRange(yJoker, 'Y')))//Something is wrong with joker xy.
+					if (!(checkXYInRange(xJoker, 'X') || checkXYInRange(yJoker, 'Y')))//Something is wrong with joker xy. //Guy- this mean joker not in range?
 					{
-						movePlayerError(moveNum);
+						setPlayerStatus(badMoves, notInRange, moveNum);
+						//movePlayerError(moveNum);
 						return false;
 					}
 					else if (playerBoard[xJoker][yJoker].getPieceJoker())
@@ -137,11 +137,12 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 					}
 					else
 					{
-						movePlayerError(moveNum);
+						setPlayerStatus(badMoves, notExistJoker, moveNum); //Error- not exit joker in this location
+						//movePlayerError(moveNum);
 						return false;
 					}
 				}
-				else
+				else //Guy- whay this mean this else?
 				{
 					movePlayerError(moveNum);
 					return false;
@@ -149,8 +150,9 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			}
 			else// I am assuming that the joker is written like this - [J:
 			{
-			movePlayerError(moveNum);//TODO:something is wrong with the line..
-			return false;
+				setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
+				//movePlayerError(moveNum);//TODO:something is wrong with the line..
+				return false;
 			}
 		}
 		playerBoard[newX][newY].setPieceType(playerBoard[currX][currY].getPieceType());
@@ -162,14 +164,21 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		return true;
 	}
 	else {
-		error = errorInMoveFiles;
+		setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
 	}
 	delete[] currInput;
 }
-void Player::movePlayerError(int lineNum)
+
+/*void Player::movePlayerError(int lineNum)  //Guy- we need this???
 {
 	error = errorInMoveFiles;
 	errorLine = lineNum;
+}*/
+void Player::setPlayerStatus(Reason reason, Error theError, int line) 
+{
+	status = reason;
+	error = theError;
+	errorLine = line;
 }
 
 void Player::readFromFile()
@@ -186,17 +195,17 @@ void Player::readFromFile()
 		numOfRows++;
 		if (numOfRows > K)
 		{
-			this->status = badPosition;
-			error = tooManyRows;
+			setPlayerStatus(badPosition, tooManyRows, 0);
 			illegalFile = true;
 			return;
 		}
 		else if (getline(inFile, tmpRead))
 		{
 			inputIndex = 0;
-		    getInput = parseLine(tmpRead, inputIndex);
-			if (inputIndex>=3)
+		    getInput = parseLine(tmpRead, inputIndex); 
+			if (inputIndex>=3) //Guy- we need th check just if is equal to 3 and not if he bigger then 3, no?
 			{
+				//////////////All this we cand doing not in the if
 				type = getInput[0][0];
 				xLocation = stoi(getInput[1]);
 				
@@ -204,37 +213,38 @@ void Player::readFromFile()
 				
 				if (!(checkXYInRange(yLocation, 'Y') || checkXYInRange(xLocation, 'X')))
 				{
-					errorLine = numOfRows;
+					setPlayerStatus(badPosition, notInRange, numOfRows);
 					return;
 				}
 				if (this->playerBoard[xLocation][yLocation].getPieceType() != '-') // There is a piece in this location
 				{
-					status = badPosition;
-					errorLine = numOfRows;
+					setPlayerStatus(badPosition, sameLocation, numOfRows);
 					return;
 				}
 				this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
 				this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
+				/////////////////until This
 
-				if (getInput[0][0] == 'J')
+				if (getInput[0][0] == 'J') //Guy- why we don't check the size- if is equal to 4 in elseif?
 				{
 					if (inputIndex == 4)
 					{
 						playerBoard[xLocation][yLocation].setPieceJoker(true);
 						type = getInput[3][0];
+						countPieces('J');
 					}
 					else
 					{
+						
 						status = badPosition;
 						errorLine = numOfRows;
 						return;//wrong input of joker
 					}
 				}
-				checkForCorrectType(type);
+				checkForCorrectType(type,numOfRows);
 				//If the piece type isn't one of the pieces in the game
 				if (status != noReason)
 				{
-					errorLine = numOfRows;
 					return;
 				}
 				this->playerBoard[xLocation][yLocation].setPieceType(type);
@@ -267,14 +277,12 @@ void Player::checkValidityiPieces()
 	if (counterPieces[P] > NUM_OF_PAPER || counterPieces[R] > NUM_OF_ROCK || counterPieces[B] > NUM_OF_BOMB || counterPieces[J] > NUM_OF_JOKER ||
 		counterPieces[S] > NUM_OF_SCISSORS || counterPieces[F] > NUM_OF_FLAG)
 	{
-		this->status = badPosition; //-	A PIECE type appears in file more than its number
-		error = tooManyPieces;
+		setPlayerStatus(badPosition, tooManyPieces, 0); //-	A PIECE type appears in file more than its number
 
 	}
 	if (counterPieces[F] != 1)
 	{
-		this->status = badPosition;// missing flag
-		error = noFlag;
+		setPlayerStatus(badPosition, noFlag, 0); // Missing flag
 	}
 }
 
