@@ -76,5 +76,8 @@ public:
 	void printError();
 	string returnReason();
 	void hideJoker();
+<<<<<<< HEAD
 	bool checkMoveisLegal(const int& currX, const int& currY, const int& newX, const int& newY,const char& type);
+=======
+>>>>>>> master
 };

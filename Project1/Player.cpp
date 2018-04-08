@@ -150,6 +150,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			else //The wrong, for example: "J::" insted of "J:"
 			{
 				setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
+				
 				return false;
 			}
 		}
@@ -230,8 +231,7 @@ void Player::readFromFile()
 					}
 					else
 					{
-
-						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
+						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); 
 						return;
 					}
 				}

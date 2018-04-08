@@ -9,11 +9,11 @@
 #include <stdlib.h>
 
 void gotoxy(int x, int y);
-void setTextColor(Color);
-
+void setTextColor(Color color);
+void setTextbBackground(Color colorToSet);
 void hideCursor();
 void clear_screen();
-
+void setTextRemoveColor();
 #ifndef WINDOWS	
 	int _getch(void);
 	int _kbhit(void);

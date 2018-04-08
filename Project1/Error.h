@@ -14,5 +14,6 @@ enum Error
 	notExistPiece=9,
 	notExistJoker=10,
 	wrongInputJoker=11,
-	emptyFile=12
+	emptyFile=12,
+	moveIllegal=13
 };
