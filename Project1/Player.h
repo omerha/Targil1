@@ -74,5 +74,6 @@ public:
 		movesFile = fileName;
 	}
 	void printError();
+	string returnReason();
 	void hideJoker();
 };

@@ -381,6 +381,32 @@ void Player::printError()
 		break;
 	}
 }
+
+string Player::returnReason()
+{
+	switch (status)
+	{
+	case noReason:
+		return "No reason";
+		break;
+	case flagsCaptured:
+		return "All flags of the opponent are captured";
+		break;
+	case allEaten:
+		return "All moving PIECEs of the opponent are eaten";
+		break;
+	case badPosition:
+		return "Bad Positioning input file for ";
+		break;
+	case badMoves:
+		return "Bad Moves input file for ";
+		break;
+	default:
+		return "No reason";
+		break;
+	}
+}
+
 void Player::hideJoker()
 {
 	int counterJoker = 0;

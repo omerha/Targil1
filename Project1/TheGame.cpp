@@ -66,9 +66,10 @@ void TheGame::initStartBoard()
 				
 				res = pieceFight(i, j);
 				//The printing is just to check whice piece win in the fight
+				/*
 				cout << "we are fighting in square: " << i << "*" << j << "\n";
 				cout << "the winner is: " << res << "\n";
-
+				*/
 				setFightResult(res, i, j);
 			}
 			else if (p[0].playerBoard[i][j].getPieceType() != '-')
@@ -369,22 +370,26 @@ void TheGame::checkForWinner()
 
 	}
 	if (p[0].win &&p[1].win)
-		this->winner = 3; //The game is over and the two player win, this mean tie
-	else if (p[0].win)
-		this->winner = 1; //The game is over and player 1 win
-	else if (p[1].win)
-		this->winner = 2; //The game is over and player 2 win
-	if (winner)
 	{
-		//createOutputFile();
-		printToScreen();
+		winner = 0; //The game is over and the two player win, this mean tie
+		over = true;
+	}
+	else if (p[0].win)
+	{
+		winner = 1; //The game is over and player 1 win
+		over = true;
+	}
+	else if (p[1].win)
+	{
+		winner = 2; //The game is over and player 2 win
+		over = true;
 	}
 }
 
 void TheGame::printToScreen()
 {
 	int i;
-	gotoxy(1, 15);
+	gotoxy(1, 23);
 	for (i = 0; i < numOfPlayers; i++)
 	{
 		cout << "\nThe Errors of player number " << i + 1 << ": ";
@@ -397,16 +402,17 @@ void TheGame::run()
 	int moveNum = 0;
 	init();
 	checkForWinner();
-	if (!winner)
+	if (!over)
 	{
 		drawGameBoard();
 	}
-	while (!winner)
+	while (!over)
 	{
 		move(moveNum++);
 		checkForWinner();
 	}
-		createOutputFile();
+	printToScreen();
+	createOutputFile();
 }
 
 void TheGame::move(int moveNum)
@@ -548,7 +554,48 @@ void TheGame::createOutputFile()
 	if (outfile.is_open())
 	{
 		outfile << "Winner: " << winner << "\n";
-		outfile << "Reason: " << "\n";
+		outfile << "Reason: " ;
+		if (winner == 1)
+		{
+			outfile << p[1].returnReason();
+			if ((p[1].status == badPosition) || (p[1].status == badMoves))
+			{
+				outfile << "player 2 line " << p[1].errorLine;
+			}
+		}
+
+		else if (winner == 2)
+		{
+			outfile << p[1].returnReason();
+			if ((p[0].status == badPosition) || (p[0].status == badMoves))
+			{
+				outfile << "player 1 line " << p[0].errorLine;
+			}
+		}
+		else if (winner == 0)
+		{
+			if (p[0].status == p[1].status)
+			{
+				if (p[0].status==badPosition)
+					outfile << "Bad Positioning input file for both players- player 1: line" << p[0].errorLine << ", player 2: line " << p[1].errorLine;
+				//here we need to check if both Moves input files done without a winner
+			}
+		
+			else
+			{
+				outfile << p[0].returnReason();
+				if ((p[0].status == badPosition) || (p[0].status == badMoves))
+				{
+					outfile << " player 1 line " << p[0].errorLine;
+				}
+				outfile << p[1].returnReason();
+				if ((p[1].status == badPosition) || (p[1].status == badMoves))
+				{
+					outfile << " player 2 line " << p[1].errorLine;
+				}
+			}
+		}
+		outfile << "\n\n";
 		for (int j = 1; j < 11; j++)
 		{
 			outfile << "|";
