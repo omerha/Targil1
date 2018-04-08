@@ -12,7 +12,6 @@ Player::Player() //Constructor
 		counterPieces[i] = 0;
 	error = noError;
 	errorLine = 0;
-	win = false;
 }
 
 void Player::checkForCorrectType(char type, int numOfRow)

@@ -355,7 +355,8 @@ void TheGame::checkForWinner()
 	{
 		if (p[numPlayer].status != noReason)
 		{
-			p[abs(numPlayer - 1)].win = true;
+			//p[abs(numPlayer - 1)].win = true;
+			over = true;
 		}
 		counter = 0;
 		for (i = 0; i <= 3; i++)
@@ -363,12 +364,35 @@ void TheGame::checkForWinner()
 			counter += p[numPlayer].counterPieces[i];
 		}
 
-		if ((counter == 0) ||(p[numPlayer].counterPieces[F]==0))
+		if (counter == 0)
 		{
-			p[abs(numPlayer - 1)].win = true;
+			p[i].status = allEaten;
+			over = true;
+			//p[abs(numPlayer - 1)].win = true;
 		}
-
+		if (p[numPlayer].counterPieces[F] == 0)
+		{
+			p[i].status = flagsCaptured;
+			over = true;
+			//p[abs(numPlayer - 1)].win = true;
+		}
 	}
+	if (over)
+	{
+		if ((p[0].status != noReason) && (p[1].status != noReason))
+		{
+			winner = 0;
+		}
+		if (p[0].status == noReason)
+		{
+			winner = 1;
+		}
+		if (p[1].status == noReason)
+		{
+			winner = 2;
+		}
+	}
+	/*
 	if (p[0].win &&p[1].win)
 	{
 		winner = 0; //The game is over and the two player win, this mean tie
@@ -384,6 +408,7 @@ void TheGame::checkForWinner()
 		winner = 2; //The game is over and player 2 win
 		over = true;
 	}
+	*/
 }
 
 void TheGame::printToScreen()
@@ -406,10 +431,10 @@ void TheGame::run()
 	{
 		drawGameBoard();
 	}
-	while (!over)
+	while (over == false)
 	{
 		move(moveNum++);
-		checkForWinner();
+		//checkForWinner();
 	}
 	printToScreen();
 	createOutputFile();
@@ -420,7 +445,15 @@ void TheGame::move(int moveNum)
 	int i, j;
 	int newX = 0, newY = 0, oldX = 0, oldY = 0, jokerX = 0, jokerY = 0;
 	char newJokerType = '-';
-	for (i = 0; i < numOfPlayers && !winner; i++)
+	//bool isValid = true;
+	if ((p[0].numOfMoves < moveNum) && (p[1].numOfMoves < moveNum))
+	{
+		over = true;
+		p[0].status = p[1].status = moveFilesDone;
+		//checkForWinner();
+
+	}
+	for (i = 0; i < numOfPlayers && !over; i++)
 	{
 		newJokerType = '-';
 		if (p[i].move(moveNum, newX, newY, oldX, oldY, jokerX, jokerY, newJokerType))
@@ -429,12 +462,12 @@ void TheGame::move(int moveNum)
 			{
 				gameBoard[jokerX][jokerY].setPieceType(newJokerType);
 			}
-			movePiece(oldX, oldY, newX, newY,i);
-			
-		}
-		else {
-			
+			movePiece(oldX, oldY, newX, newY, i);
 
+		}
+		
+
+			checkForWinner();
 			//the printing is just for cheaking
 			/*
 			cout << "\n"<< "Move File" << "\n";
@@ -447,9 +480,11 @@ void TheGame::move(int moveNum)
 			cout << "the error: " << p[1].error << "\n";
 			cout << "the error line: " << p[1].errorLine << "\n";
 			*/
-		}
+		
 
 	}
+
+
 }
 
 void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY, int playerNum)
@@ -578,7 +613,8 @@ void TheGame::createOutputFile()
 			{
 				if (p[0].status==badPosition)
 					outfile << "Bad Positioning input file for both players- player 1: line" << p[0].errorLine << ", player 2: line " << p[1].errorLine;
-				//here we need to check if both Moves input files done without a winner
+				if (p[0].status == moveFilesDone)
+					outfile << "A tie - both Moves input files done without a winner";
 			}
 		
 			else

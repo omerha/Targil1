@@ -69,7 +69,7 @@ void main(int argc,char* argv[])
 		
 	
 	//game.init();
-	game.run();
+	//game.run();
 	theGame.run();
 }
 

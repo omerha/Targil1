@@ -43,7 +43,7 @@ class Player
 	std::string movesFile; //Guy- we can change this name to moveFile?
 	Error error;
 	int errorLine;
-	bool win;
+	//bool win;
 	string movesArr[100];
 	int numOfMoves = 0;
 	Color color;
