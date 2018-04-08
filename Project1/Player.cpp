@@ -35,7 +35,7 @@ string* Player::parseLine(string line, int& size,int lineNum,Error error)
 	{
 		if (getInput[i].length() >= 2)
 		{
-			if (getInput[i].length() > 2 || !(isdigit(getInput[i][0]) && isdigit(getInput[i][1])))
+			if (getInput[i].length() > 2 || (!(isdigit(getInput[i][0]) && isdigit(getInput[i][1])) && getInput[i][0] != 'J'))
 			setPlayerStatus(badPosition, error, lineNum);
 		}
 		else if(getInput[i].empty())
@@ -231,7 +231,11 @@ void Player::readFromFile()
 					else
 					{
 
+
 						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
+
+					
+
 						return;
 					}
 				}
