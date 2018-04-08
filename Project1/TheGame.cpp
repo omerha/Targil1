@@ -9,11 +9,11 @@ void TheGame::init()
 
 
 
-	p[0].setInputFile("test.txt");
-	p[0].setMoveFile("testmove.txt");
+	p[0].setInputFile("player1.rps_board");
+	p[0].setMoveFile("player1.rps_moves");
 	p[0].putMovesFileInStringArr();
-	p[1].setInputFile("test2.txt");
-	p[1].setMoveFile("testmove2.txt");
+	p[1].setInputFile("player2.rps_board");
+	p[1].setMoveFile("player2.rps_moves");
 	p[1].putMovesFileInStringArr();
 	bool goodToInitBoard = true;
 
