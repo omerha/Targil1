@@ -9,15 +9,14 @@ void TheGame::init()
 
 
 
-	p[0].setInputFile("test.txt");
-	p[0].setMoveFile("testmove.txt");
+	p[0].setInputFile("player1.rps_board");
+	p[0].setMoveFile("player1.rps_moves");
 	p[0].putMovesFileInStringArr();
-	p[1].setInputFile("test2.txt");
-	p[1].setMoveFile("testmove2.txt");
+	p[1].setInputFile("player2.rps_board");
+	p[1].setMoveFile("player2.rps_moves");
 	p[1].putMovesFileInStringArr();
 	bool goodToInitBoard = true;
 
-	//All this need to be in function ReadInputFiles
 	for (int i = 0; i < this->numOfPlayers; i++)
 	{
 		goodToInitBoard = true;
@@ -28,12 +27,16 @@ void TheGame::init()
 			p[i].checkValidityiPieces();
 			if (p[i].status != noReason)
 				goodToInitBoard = false;
+			if (showOnlyKnownInfo)
+				p[i].hideJoker();
 		}
 		else
 			goodToInitBoard = false;
 	}	
 	
 	 // The printing is just for checking the status and the error print after reading the input file
+	/*
+	cout << "Input File: \n";
 	cout << "----The player number " << 1 << " -----\n";
 	cout << "the status: " << p[0].status << "\n";
 
@@ -44,7 +47,7 @@ void TheGame::init()
 
 	cout << "the error: " << p[1].error << "\n";
 	cout << "the error line: " << p[1].errorLine << "\n";
-	
+	*/
 	if (goodToInitBoard)
 		initStartBoard();
 }
@@ -63,9 +66,10 @@ void TheGame::initStartBoard()
 				
 				res = pieceFight(i, j);
 				//The printing is just to check whice piece win in the fight
+				/*
 				cout << "we are fighting in square: " << i << "*" << j << "\n";
 				cout << "the winner is: " << res << "\n";
-
+				*/
 				setFightResult(res, i, j);
 			}
 			else if (p[0].playerBoard[i][j].getPieceType() != '-')
@@ -366,38 +370,49 @@ void TheGame::checkForWinner()
 
 	}
 	if (p[0].win &&p[1].win)
-		this->winner = 3; //The game is over and the two player win, this mean tie
-	else if (p[0].win)
-		this->winner = 1; //The game is over and player 1 win
-	else if (p[1].win)
-		this->winner = 2; //The game is over and player 2 win
-	if (winner != 0)
 	{
-		//createOutputFile();
-		//printToScreen();
+		winner = 0; //The game is over and the two player win, this mean tie
+		over = true;
+	}
+	else if (p[0].win)
+	{
+		winner = 1; //The game is over and player 1 win
+		over = true;
+	}
+	else if (p[1].win)
+	{
+		winner = 2; //The game is over and player 2 win
+		over = true;
 	}
 }
 
+void TheGame::printToScreen()
+{
+	int i;
+	gotoxy(1, 23);
+	for (i = 0; i < numOfPlayers; i++)
+	{
+		cout << "\nThe Errors of player number " << i + 1 << ": ";
+		p[i].setColor(WHITE);
+		p[i].printError();
+	}
+}
 void TheGame::run()
 {
 	int moveNum = 0;
 	init();
 	checkForWinner();
-	if (winner)
-	{
-		createOutputFile();
-	}
-	else
+	if (!over)
 	{
 		drawGameBoard();
-		
 	}
-	while (!winner)
+	while (!over)
 	{
 		move(moveNum++);
 		checkForWinner();
 	}
-		createOutputFile();
+	printToScreen();
+	createOutputFile();
 }
 
 void TheGame::move(int moveNum)
@@ -415,10 +430,23 @@ void TheGame::move(int moveNum)
 				gameBoard[jokerX][jokerY].setPieceType(newJokerType);
 			}
 			movePiece(oldX, oldY, newX, newY,i);
-			checkForWinner();
+			
 		}
 		else {
-			cout << "got to else";//need to check for errors in players + set winner.
+			
+
+			//the printing is just for cheaking
+			/*
+			cout << "\n"<< "Move File" << "\n";
+			cout << "----The player number " << 1 << " -----\n";
+			cout << "the status: " << p[0].status << "\n";
+			cout << "the error: " << p[0].error << "\n";
+			cout << "the error line: " << p[0].errorLine << "\n";
+			cout << "----The player number " << 2 << " -----\n";
+			cout << "the status: " << p[1].status << "\n";
+			cout << "the error: " << p[1].error << "\n";
+			cout << "the error line: " << p[1].errorLine << "\n";
+			*/
 		}
 
 	}
@@ -454,7 +482,7 @@ void TheGame::drawPiece(const int & oldX, const int & oldY, const int & newX, co
 				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
 				p[secondPlayerIndex].playerBoard[newX][newY].removePiece(newX, newY);
 			}
-			else if (fightResult == playerNum)
+			else if (fightResult - 1 == playerNum)
 			{
 				p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
 				p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
@@ -500,17 +528,10 @@ void TheGame::drawPiece(const int & oldX, const int & oldY, const int & newX, co
 
 void TheGame::drawGameBoard()
 {
-/*	for (int i = 1; i <= N; i++)
-	{
-		for (int j = 1; j <= M; j++)
-		{
-			if (gameBoard[i][j].getPieceType() != '-')
-			{
-				gameBoard[i][j].drawPiece(i,j);
-			}
-		}
-	}*/
-	for (int player = 0; player < numOfPlayers; player++) {
+	drawBoardLines();
+	int player = showMode != 1 ? 0 : 1;
+	int maxPlayerToPrint = showMode >= 1 ? numOfPlayers : 1;
+	for (; player < maxPlayerToPrint; player++) {
 		for (int i = 1; i <= N; i++)
 		{
 			for (int j = 1; j <= M; j++)
@@ -533,7 +554,48 @@ void TheGame::createOutputFile()
 	if (outfile.is_open())
 	{
 		outfile << "Winner: " << winner << "\n";
-		outfile << "Reason: " << "\n";
+		outfile << "Reason: " ;
+		if (winner == 1)
+		{
+			outfile << p[1].returnReason();
+			if ((p[1].status == badPosition) || (p[1].status == badMoves))
+			{
+				outfile << "player 2 line " << p[1].errorLine;
+			}
+		}
+
+		else if (winner == 2)
+		{
+			outfile << p[1].returnReason();
+			if ((p[0].status == badPosition) || (p[0].status == badMoves))
+			{
+				outfile << "player 1 line " << p[0].errorLine;
+			}
+		}
+		else if (winner == 0)
+		{
+			if (p[0].status == p[1].status)
+			{
+				if (p[0].status==badPosition)
+					outfile << "Bad Positioning input file for both players- player 1: line" << p[0].errorLine << ", player 2: line " << p[1].errorLine;
+				//here we need to check if both Moves input files done without a winner
+			}
+		
+			else
+			{
+				outfile << p[0].returnReason();
+				if ((p[0].status == badPosition) || (p[0].status == badMoves))
+				{
+					outfile << " player 1 line " << p[0].errorLine;
+				}
+				outfile << p[1].returnReason();
+				if ((p[1].status == badPosition) || (p[1].status == badMoves))
+				{
+					outfile << " player 2 line " << p[1].errorLine;
+				}
+			}
+		}
+		outfile << "\n\n";
 		for (int j = 1; j < 11; j++)
 		{
 			outfile << "|";
@@ -554,3 +616,17 @@ void TheGame::createOutputFile()
 		//file error
 	}
 }
+void TheGame::drawBoardLines()
+{
+	for (int j = 1; j < 11; j++)
+	{
+		for (int i = 1; i < 11; i++)
+		{
+			gotoxy(i * 3 - 2, j * 2);
+			cout << "|";
+			gotoxy(i * 3 + 2, j * 2);
+			cout << "|";
+		}
+	}
+}
+

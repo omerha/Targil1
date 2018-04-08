@@ -57,7 +57,7 @@ public:
 	bool checkXYInRange(int num,char cord);
 	Player();
 	void checkForCorrectType(char type, int numOfRow);
-	string* parseLine(string line, int& size);
+	string* parseLine(string line, int& size,int lineNum,Error error);
 	void putMovesFileInStringArr();
 	bool move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType);
 	//void movePlayerError(int lineNum); Guy- we need this?
@@ -73,4 +73,8 @@ public:
 	{
 		movesFile = fileName;
 	}
+	void printError();
+	string returnReason();
+	void hideJoker();
+	bool checkMoveisLegal(const int& currX, const int& currY, const int& newX, const int& newY,const char& type);
 };
