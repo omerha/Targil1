@@ -6,8 +6,6 @@ using namespace std;
 Player::Player() //Constructor
 {
 	status = noReason;
-	// Need to complete numOfMovingPieces =
-	//playerNum = nPlayer;
 	for (int i = 0; i < 6; i++)
 		counterPieces[i] = 0;
 	error = noError;
@@ -22,7 +20,7 @@ void Player::checkForCorrectType(char type, int numOfRow)
 		setPlayerStatus(badPosition, unKnownPiece, numOfRow);
 	}
 }
-string* Player::parseLine(string line, int& size)
+string* Player::parseLine(string line, int& size,int lineNum,Error error)
 {
 	string tmpRead, temp;
 	istringstream tempCh(line);
@@ -31,24 +29,38 @@ string* Player::parseLine(string line, int& size)
 	while (getline(tempCh, temp, ' '))
 	{
 		getInput[inputIndex++] = temp;
-		//splitLineStatus = true;
 	}
 	string* out = new string[inputIndex];
-	for(int i=0;i<inputIndex;i++)
+	for (int i = 0; i < inputIndex; i++)
+	{
+		if (getInput[i].length() >= 2)
+		{
+			if (getInput[i].length() > 2 || !(isdigit(getInput[i][0]) && isdigit(getInput[i][1])))
+			setPlayerStatus(badPosition, error, lineNum);
+		}
+		else if(getInput[i].empty())
+			setPlayerStatus(badPosition, error, lineNum);
 		out[i] = getInput[i];
-	
+	}
 	size = inputIndex;
 	return out;
 }
 void Player::putMovesFileInStringArr()
 {
+	bool illegalFile = false;
 	int numOfRows = 0;
 	string tmpReadFile;
 	ifstream inFile(this->movesFile);
-	while (!inFile.eof() && inFile)
+	if (inFile.fail())
+	{
+		//need to check if its legal to not having moves file.
+		illegalFile = true;
+	}
+	while (!inFile.eof() && !illegalFile)
 	{
 		if (getline(inFile, tmpReadFile))
 		{
+			if(!(tmpReadFile.empty()))
 			movesArr[numOfRows++] = tmpReadFile;
 		}
 		else
@@ -66,7 +78,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 	int currX = 0, currY = 0, newX = 0, newY = 0;
 	if (moveNum < numOfMoves)
 	{
-		currInput = parseLine(movesArr[moveNum], numOfIndex);
+		currInput = parseLine(movesArr[moveNum], numOfIndex, moveNum, wrongFrormatRowMoveFile);
 		if (numOfIndex < 4 || numOfIndex>8)
 		{
 			setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum); //error - too many or too few arguments in line.
@@ -81,18 +93,14 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			setPlayerStatus(badMoves, notInRange, moveNum); //error x y not in range.
 			return false;
 		}
-		if ((abs(currX - newX) > 1) || (abs(currY - newY) > 1))
+		if (checkMoveisLegal(currX, currY, newX, newY, playerBoard[currX][currY].getPieceType()))
 		{
 			setPlayerStatus(badMoves, moveIllegal, moveNum);
-		}
-		if (((abs(currX - newX) == 1) && (abs(currY - newY) == 1)) && ((currX!=newX)&&(currY!=newY)))
-		{
-			setPlayerStatus(badMoves, moveIllegal , moveNum);
+			return false;
 		}
 		if (playerBoard[currX][currY].getPieceType() == '-')
 		{
 			setPlayerStatus(badMoves, notExistPiece, moveNum); //error the player is trying to move a piece that does not exist.
-
 			return false;
 		}
 		if (numOfIndex > 6)//means there is a move for the joker. 
@@ -142,7 +150,6 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			else //The wrong, for example: "J::" insted of "J:"
 			{
 				setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
-				
 				return false;
 			}
 		}
@@ -153,9 +160,6 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 		newXLocation = newX;
 		newYLocation = newY;
 		return true;
-	}
-	else {
-		setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum);
 	}
 	delete[] currInput;
 }
@@ -177,7 +181,12 @@ void Player::readFromFile()
 	ifstream inFile(this->startGameFile);
 	int xLocation, yLocation;
 	char type;
-	while (!inFile.eof() && !illegalFile && inFile)
+	if (inFile.fail())
+	{
+		//Guy put here the right error - this means the player does not have file.
+		illegalFile = true;
+	}
+	while (!inFile.eof() && !illegalFile )
 	{
 		numOfRows++;
 		if (numOfRows > K)
@@ -189,7 +198,7 @@ void Player::readFromFile()
 		else if (getline(inFile, tmpRead))
 		{
 			inputIndex = 0;
-		    getInput = parseLine(tmpRead, inputIndex); 
+			getInput = parseLine(tmpRead, inputIndex, numOfRows, wrongFormatRowInputFile);
 			if ((inputIndex == 3) || (inputIndex == 4))
 			{
 				type = getInput[0][0];
@@ -211,7 +220,7 @@ void Player::readFromFile()
 				this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
 
 
-				if (getInput[0][0] == 'J') 
+				if (getInput[0][0] == 'J')
 				{
 					if (inputIndex == 4)
 					{
@@ -222,7 +231,7 @@ void Player::readFromFile()
 					else
 					{
 
-						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); 
+						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
 						return;
 					}
 				}
@@ -237,7 +246,7 @@ void Player::readFromFile()
 					return;
 				}
 				this->playerBoard[xLocation][yLocation].setPieceType(type);
-			
+
 				if (playerBoard[xLocation][yLocation].getPieceJoker())
 				{
 					countPieces('J');
@@ -250,12 +259,14 @@ void Player::readFromFile()
 
 			}
 			else
+				if (inputIndex)
 					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
 		}
 		else
+			if (numOfRows == 0)
 				setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
-
-		delete[] getInput;
+		if (!tmpRead.empty())
+			delete[] getInput;
 	}
 }
 
@@ -421,4 +432,16 @@ void Player::hideJoker()
 			}
 		}
 	}
+}
+
+bool Player::checkMoveisLegal(const int & currX, const int & currY, const int & newX, const int & newY,const char& type)
+{
+	if ((abs(currX - newX) > 1) || (abs(currY - newY) > 1))
+		return true;
+	else if (((abs(currX - newX) == 1) && (abs(currY - newY) == 1)) && ((currX != newX) && (currY != newY))) // check for cross
+		return true;
+	else if (type == 'B')
+		return true;
+	else
+		return false;
 }
