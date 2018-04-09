@@ -182,7 +182,7 @@ void Player::readFromFile()
 	char type;
 	if (inFile.fail())
 	{
-		//Guy put here the right error - this means the player does not have file.
+		setPlayerStatus(badPosition, notExistFile, 0);
 		illegalFile = true;
 		return;
 	}
@@ -201,6 +201,7 @@ void Player::readFromFile()
 			getInput = parseLine(tmpRead, inputIndex, numOfRows, wrongFormatRowInputFile);
 			if ((inputIndex == 3) || (inputIndex == 4))
 			{
+
 				type = getInput[0][0];
 				xLocation = stoi(getInput[1]);
 
@@ -218,65 +219,70 @@ void Player::readFromFile()
 				}
 				this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
 				this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
-
-
+			}
+			else
+			{
+				if (inputIndex)
+					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
+				return;
+			}
+			if (inputIndex == 4)
+			{
 				if (getInput[0][0] == 'J')
 				{
-					if (inputIndex == 4)
+					playerBoard[xLocation][yLocation].setPieceJoker(true);
+					countPieces('J');
+					type = getInput[3][0];
+					if ((type != 'P') && (type != 'R') && (type != 'S') && (type != 'B'))
 					{
-						playerBoard[xLocation][yLocation].setPieceJoker(true);
-						type = getInput[3][0];
-
-					}
-					else
-					{
-
-
-						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
-
-					
-
+						setPlayerStatus(badPosition, unKnownPieceForJoker, numOfRows);
 						return;
 					}
-				}
-				if ((inputIndex == 0) && (numOfMoves == 1))
-				{
-					setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
+					else playerBoard[xLocation][yLocation].setPieceType(type);
+
 				}
 				else
 				{
-					//setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
-				}
-				checkForCorrectType(type, numOfRows);
-				//If the piece type isn't one of the pieces in the game
-				if (status != noReason)
-				{
+					setPlayerStatus(badPosition, unKnownPiece, numOfRows);
 					return;
-				}
-				this->playerBoard[xLocation][yLocation].setPieceType(type);
-
-				if (playerBoard[xLocation][yLocation].getPieceJoker())
-				{
-					countPieces('J');
 
 				}
-				else
+			}
+			else if(inputIndex == 3)
+			{
+				checkForCorrectType(type, numOfRows);
+				if (status == noReason)
 				{
+					playerBoard[xLocation][yLocation].setPieceType(type);
 					countPieces(type);
+				}
+				else // //If the piece type isn't one of the pieces in the game
+				{
+					setPlayerStatus(badPosition, unKnownPiece, numOfRows);
+					return;
 				}
 
 			}
-			else
-				if (inputIndex)
-					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
+			if ((inputIndex == 0) && (numOfMoves == 1)) /////////////////Not working!
+			{
+				setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
+				return;
+			}
+
+				
+				
+	
+
 		}
-		else
-			if (numOfRows == 0)
-				setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
-		if (!tmpRead.empty())
-			delete[] getInput;
+
 	}
+
+	if (numOfRows == 0)
+			setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
+	if (!tmpRead.empty())
+		delete[] getInput;
 }
+
 
 
 
@@ -394,6 +400,12 @@ void Player::printError()
 		break;
 	case 13:
 		cout << "Move a piece in an illegal way in line " << errorLine << " in the move file \n";
+		break;
+	case 14:
+		cout << "Not exsit file";
+		break;
+	case 15:
+		cout << "Unknow piece was inserted for joker in line:" << errorLine << " in the input file\n";
 		break;
 	default:
 		cout << "Not exsit errors to this player\n";
