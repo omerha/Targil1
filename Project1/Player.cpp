@@ -184,6 +184,7 @@ void Player::readFromFile()
 	{
 		//Guy put here the right error - this means the player does not have file.
 		illegalFile = true;
+		return;
 	}
 	while (!inFile.eof() && !illegalFile )
 	{
@@ -205,7 +206,7 @@ void Player::readFromFile()
 
 				yLocation = stoi(getInput[2]);
 
-				if (!(checkXYInRange(yLocation, 'Y') || checkXYInRange(xLocation, 'X')))
+				if (!(checkXYInRange(yLocation, 'Y') && checkXYInRange(xLocation, 'X')))
 				{
 					setPlayerStatus(badPosition, notInRange, numOfRows);
 					return;
@@ -241,6 +242,10 @@ void Player::readFromFile()
 				if ((inputIndex == 0) && (numOfMoves == 1))
 				{
 					setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
+				}
+				else
+				{
+					//setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
 				}
 				checkForCorrectType(type, numOfRows);
 				//If the piece type isn't one of the pieces in the game
@@ -279,8 +284,8 @@ void Player::readFromFile()
 
 void Player::checkValidityiPieces()
 {
-
-
+	//The print is just for checking how many pieces each type there is for the each player
+	//cout << "CounterPieces P:" << counterPieces[P] << " R:" << counterPieces[R] << " B:" << counterPieces[B] << " S:" << counterPieces[S] << " F:" << counterPieces[F] << " J:" << counterPieces[J] << "\n";
 	if (counterPieces[P] > NUM_OF_PAPER || counterPieces[R] > NUM_OF_ROCK || counterPieces[B] > NUM_OF_BOMB || counterPieces[J] > NUM_OF_JOKER ||
 		counterPieces[S] > NUM_OF_SCISSORS || counterPieces[F] > NUM_OF_FLAG)
 	{
@@ -329,7 +334,7 @@ bool Player::checkXYInRange(int num,char cord)
 	{
 		if (num < 1 || num>10) // X coordinate isn't inrange
 		{
-			status = badPosition;
+			//status = badPosition;
 			return false;
 		}
 	}
@@ -337,7 +342,7 @@ bool Player::checkXYInRange(int num,char cord)
 	{
 		if (num < 1 || num>10) // X coordinate isn't inrange
 		{
-			status = badPosition;
+			//status = badPosition;
 			return false;
 		}
 	}
@@ -352,7 +357,7 @@ void Player::printError()
 		if (status == badPosition)
 			cout << "The coordinates in line:" << errorLine << " in the input file not in the range of the board\n";
 		else
-			cout << "The coordinates in line:" << errorLine << " in the move file not in the range of the board\n";
+			cout << "The coordinates in line:" << errorLine << " in the input file not in the range of the board\n";
 		break;
 	case 2:
 		cout << "The coordinates that inseted in line:" << errorLine << " in the input file already have a piece in the board\n";

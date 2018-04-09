@@ -364,15 +364,15 @@ void TheGame::checkForWinner()
 			counter += p[numPlayer].counterPieces[i];
 		}
 
-		if (counter == 0)
+		if ((counter == 0)&&(!over))
 		{
-			p[i].status = allEaten;
+			p[numPlayer].status = allEaten;
 			over = true;
 			//p[abs(numPlayer - 1)].win = true;
 		}
-		if (p[numPlayer].counterPieces[F] == 0)
+		if ((p[numPlayer].counterPieces[F] == 0) &&(!over))
 		{
-			p[i].status = flagsCaptured;
+			p[numPlayer].status = flagsCaptured;
 			over = true;
 			//p[abs(numPlayer - 1)].win = true;
 		}
@@ -431,7 +431,7 @@ void TheGame::run()
 	{
 		drawGameBoard();
 	}
-	while (over == false)
+	while (!over)
 	{
 		move(moveNum++);
 		//checkForWinner();
@@ -601,7 +601,7 @@ void TheGame::createOutputFile()
 
 		else if (winner == 2)
 		{
-			outfile << p[1].returnReason();
+			outfile << p[0].returnReason();
 			if ((p[0].status == badPosition) || (p[0].status == badMoves))
 			{
 				outfile << "player 1 line " << p[0].errorLine;
@@ -612,7 +612,7 @@ void TheGame::createOutputFile()
 			if (p[0].status == p[1].status)
 			{
 				if (p[0].status==badPosition)
-					outfile << "Bad Positioning input file for both players- player 1: line" << p[0].errorLine << ", player 2: line " << p[1].errorLine;
+					outfile << "Bad Positioning input files for both players- player 1: line " << p[0].errorLine << ", player 2: line " << p[1].errorLine;
 				if (p[0].status == moveFilesDone)
 					outfile << "A tie - both Moves input files done without a winner";
 			}
