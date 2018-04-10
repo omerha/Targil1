@@ -29,20 +29,25 @@ string* Player::parseLine(string line, int& size,int lineNum,Error error)
 	{
 		getInput[inputIndex++] = temp;
 	}
-	string* out = new string[inputIndex];
-	for (int i = 0; i < inputIndex; i++)
+	if (inputIndex)
 	{
-		if (getInput[i].length() >= 2)
+		string* out = new string[inputIndex];
+		for (int i = 0; i < inputIndex; i++)
 		{
-			if (getInput[i].length() > 2 || (!(isdigit(getInput[i][0]) && isdigit(getInput[i][1])) && getInput[i][0] != 'J'))
-			setPlayerStatus(badPosition, error, lineNum);
+			if (getInput[i].length() >= 2)
+			{
+				if (getInput[i].length() > 2 || (!(isdigit(getInput[i][0]) && isdigit(getInput[i][1])) && getInput[i][0] != 'J'))
+					setPlayerStatus(badPosition, error, lineNum);
+			}
+			else if (getInput[i].empty())
+				setPlayerStatus(badPosition, error, lineNum);
+			out[i] = getInput[i];
 		}
-		else if(getInput[i].empty())
-			setPlayerStatus(badPosition, error, lineNum);
-		out[i] = getInput[i];
+		size = inputIndex;
+		return out;
 	}
-	size = inputIndex;
-	return out;
+	else
+		return nullptr;
 }
 void Player::putMovesFileInStringArr()
 {
@@ -222,9 +227,10 @@ void Player::readFromFile()
 			}
 			else
 			{
-				if (inputIndex)
+				if (inputIndex) {
 					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
-				return;
+					return;
+				}
 			}
 			if (inputIndex == 4)
 			{
