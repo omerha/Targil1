@@ -27,6 +27,7 @@ string* Player::parseLine(string line, int& size,int lineNum,Error error)
 	string getInput[20] = { "0" };
 	while (getline(tempCh, temp, ' '))
 	{
+		if(!(temp.empty()))
 		getInput[inputIndex++] = temp;
 	}
 	if (inputIndex)
@@ -88,10 +89,18 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum); //error - too many or too few arguments in line.
 			return false;
 		}
-		currX = stoi(currInput[0]);
-		currY = stoi(currInput[1]);
-		newX = stoi(currInput[2]);
-		newY = stoi(currInput[3]);
+		if (isdigit(currInput[0][0]) && isdigit(currInput[1][0]) && isdigit(currInput[2][0]) && isdigit(currInput[3][0]))
+		{
+			currX = stoi(currInput[0]);
+			currY = stoi(currInput[1]);
+			newX = stoi(currInput[2]);
+			newY = stoi(currInput[3]);
+		}
+		else
+		{
+			setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum); 
+			return false;
+		}
 		if (!(checkXYInRange(currX, 'X') && checkXYInRange(newX, 'X') && checkXYInRange(newY, 'Y') && checkXYInRange(currY, 'Y')))
 		{
 			setPlayerStatus(badMoves, notInRange, moveNum); //error x y not in range.
@@ -130,8 +139,8 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 						}
 						else
 						{
-							playerBoard[newX][newY].setPieceJoker(true);
-							playerBoard[xJoker][yJoker].setPieceType(nJokerType);
+						//	playerBoard[newX][newY].setPieceJoker(true);
+						//	playerBoard[xJoker][yJoker].setPieceType(nJokerType);
 							jokerXLocation = xJoker;
 							jokerYLocation = yJoker;
 							newJokerType = nJokerType;
@@ -157,6 +166,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 				return false;
 			}
 		}
+	
 		playerBoard[newX][newY].setPieceType(playerBoard[currX][currY].getPieceType());
 		playerBoard[currX][currY].setPieceType('-');
 		oldXLocation = currX;
@@ -208,10 +218,16 @@ void Player::readFromFile()
 			{
 
 				type = getInput[0][0];
-				xLocation = stoi(getInput[1]);
-
-				yLocation = stoi(getInput[2]);
-
+				if (isdigit(getInput[1][0]) && isdigit(getInput[2][0]))
+				{
+					xLocation = stoi(getInput[1]);
+					yLocation = stoi(getInput[2]);
+				}
+				else
+				{
+					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
+					return;
+				}
 				if (!(checkXYInRange(yLocation, 'Y') && checkXYInRange(xLocation, 'X')))
 				{
 					setPlayerStatus(badPosition, notInRange, numOfRows);

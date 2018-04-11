@@ -458,11 +458,12 @@ void TheGame::move(int moveNum)
 		newJokerType = '-';
 		if (p[i].move(moveNum, newX, newY, oldX, oldY, jokerX, jokerY, newJokerType))
 		{
-			if (newJokerType != '-')//means the player wants to change the joker.
+		/*	if (newJokerType != '-')//means the player wants to change the joker.
 			{
-				gameBoard[jokerX][jokerY].setPieceType(newJokerType);
-			}
-			movePiece(oldX, oldY, newX, newY, i);
+				if (gameBoard[jokerX][jokerY].getPieceType() != '-')
+					gameBoard[jokerX][jokerY].setPieceType(newJokerType);
+			}*/
+			movePiece(oldX, oldY, newX, newY, i,jokerX,jokerY,newJokerType);
 
 		}
 		
@@ -484,21 +485,27 @@ void TheGame::move(int moveNum)
 
 	}
 
-
 }
 
-void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY, int playerNum)
+void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY,const int& playerNum, const int& jokerX, const int& jokerY, const char& newJokerType)
 {
 	int fightRes = -1;
 	if (gameBoard[newX][newY].getPieceType() != '-')//there is a piece already in this place - fight!
 	{
 		fightRes = pieceFight(newX, newY);
 		setFightResult(fightRes, newX, newY);
+		this->gameBoard[oldX][oldY].setPieceType('-');
 	}
 	else
 	{
 		gameBoard[newX][newY].setPieceType(gameBoard[oldX][oldY].getPieceType());
 		gameBoard[oldX][oldY].setPieceType('-');
+	}
+	if (newJokerType != '-')
+	{
+		p[playerNum].playerBoard[jokerX][jokerY].setPieceJoker(true);
+		p[playerNum].playerBoard[jokerX][jokerY].setPieceType(newJokerType);
+		gameBoard[jokerX][jokerY].setPieceType(newJokerType);
 	}
 	if (showMode != QUIET_MODE)
 	{
