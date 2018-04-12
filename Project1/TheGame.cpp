@@ -153,7 +153,7 @@ int TheGame::pieceFight(int i, int j)
 			p[1].counterPieces[F]--;
 			return 1;
 		}
-
+		return -1;
 		break;
 	case 'S':
 		if (typePlayer2 == 'R') //The piece of player 2 win
@@ -213,6 +213,7 @@ int TheGame::pieceFight(int i, int j)
 			p[1].counterPieces[F]--;
 			return 1;
 		}
+		return -1;
 		break;
 	case 'P':
 		if (typePlayer2 == 'S') //The piece of player 2 win
@@ -272,6 +273,7 @@ int TheGame::pieceFight(int i, int j)
 			p[1].counterPieces[F]--;
 			return 1;
 		}
+		return -1;
 		break;
 	case 'B': //The two pieces lose
 		p[0].playerBoard[i][j].setPieceType('-');
@@ -323,6 +325,7 @@ int TheGame::pieceFight(int i, int j)
 		break;
 	default:
 		return -1;
+		break;
 	}
 
 
@@ -411,13 +414,16 @@ void TheGame::checkForWinner()
 	*/
 }
 
-void TheGame::printToScreen()
+void TheGame::printToScreen(bool start)
 {
 	int i;
-	gotoxy(1, 23);
+	
+	if (start)
+		gotoxy(1, 23);
 	for (i = 0; i < numOfPlayers; i++)
 	{
 		cout << "\nThe Errors of player number " << i + 1 << ": ";
+	
 		p[i].setColor(WHITE);
 		p[i].printError();
 	}
@@ -425,24 +431,27 @@ void TheGame::printToScreen()
 void TheGame::run()
 {
 	int moveNum = 0;
+	bool start = false;
 	init();
 	checkForWinner();
 	if (!over)
 	{
+		start = true;
 		drawGameBoard();
+		
 	}
 	while (!over)
 	{
 		move(moveNum++);
 		//checkForWinner();
 	}
-	printToScreen();
+	printToScreen(start);
 	createOutputFile();
 }
 
 void TheGame::move(int moveNum)
 {
-	int i, j;
+	int i;
 	int newX = 0, newY = 0, oldX = 0, oldY = 0, jokerX = 0, jokerY = 0;
 	char newJokerType = '-';
 	//bool isValid = true;
@@ -576,7 +585,7 @@ void TheGame::drawGameBoard()
 	for (; player < maxPlayerToPrint; player++) {
 		for (int i = 1; i <= N; i++)
 		{
-			for (int j = 1; j <= M; j++)
+			for (int j =1; j <= M; j++)
 			{
 				if (p[player].playerBoard[i][j].getPieceType() != '-')
 				{

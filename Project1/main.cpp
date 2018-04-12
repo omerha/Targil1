@@ -6,7 +6,7 @@ using namespace std;
 #include "Player.h"
 
 bool isDigit(char* c);
-void main(int argc,char* argv[])
+int main(int argc,char* argv[])
  {
 
 	TheGame theGame;
