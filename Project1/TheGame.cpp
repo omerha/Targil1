@@ -674,11 +674,18 @@ void TheGame::drawBoardLines()
 	{
 		for (int i = 1; i < 11; i++)
 		{
-			gotoxy(i * 3 - 2, j * 2);
+			if (j == 1)
+			{
+				gotoxy(i * 3 + 3, 4);
+				cout << i;
+			}
+			gotoxy(i * 3 +2, j * 2 +3);
 			cout << "|";
-			gotoxy(i * 3 + 2, j * 2);
+			gotoxy(i * 3 +5, j * 2+3);
 			cout << "|";
 		}
+		gotoxy(3, j * 2 +3);
+		cout << j;
 	}
 }
 

@@ -67,7 +67,7 @@ void Piece::initPiece(string line)
 
 void Piece::drawPiece(int xL, int yL)
 {
-	gotoxy(xL*3, yL*2);
+	gotoxy(xL*3+3, yL*2+3);
 	cout << pieceType;
 
 
@@ -76,7 +76,7 @@ void Piece::drawPiece(int xL, int yL)
 void Piece::removePiece(int xL, int yL)
 {
 	setTextRemoveColor();
-	gotoxy(xL * 3, yL * 2);
+	gotoxy(xL * 3+3, yL * 2+3);
 	cout << " ";
 }
 
@@ -91,14 +91,14 @@ void Piece::drawPiece(Color color, int xL, int yL)
 	
 	else
 		setTextColor(color);
-	gotoxy(xL * 3, yL * 2);
+	gotoxy(xL * 3+3, yL * 2+3);
 	cout << pieceType;
 }
 
 void Piece::drawUnknownPiece(Color color, int xL, int yL)
 {
 	setTextColor(color);
-	gotoxy(xL * 3, yL * 2);
+	gotoxy(xL * 3+3, yL * 2+3);
 	cout << "U";
 }
 
