@@ -8,5 +8,4 @@ enum Reason
 	badPosition=3, //Bad Positioning input file for player <player> -line <bad line number>
 	badMoves=4, //Bad Moves input file for player <player> -line <bad line number>
 	moveFilesDone=5 //A tie - both Moves input files done without a winner
-
 };

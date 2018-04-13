@@ -24,43 +24,34 @@ enum Pieces
 	S=2,
 	J = 3,
 	B=4,
-
 	F=5
-
 };
 
 class Player
 {
-	//int playerNum;
-	//Piece playerPieces[K];
 	friend class TheGame;
 	Piece playerBoard[N+1][M+1];
 	int counterPieces[6];
 	Reason status;
-	//int numOfMovingPieces;
-	//bool flagCaptured = false;
-	std::string startGameFile; //Guy- we can change this name to InputFile?
-	std::string movesFile; //Guy- we can change this name to moveFile?
+	std::string startGameFile; 
+	std::string movesFile; 
 	Error error;
 	int errorLine;
-	//bool win;
 	string movesArr[100];
 	int numOfMoves = 0;
 	Color color;
-	//std::string error;
 public:
 	void readFromFile();
-	//void setBoard(); Guy- we need this?
 	void checkValidityiPieces();
-	//void removePiece(); Guy- we need this?
 	void countPieces(char type);
+	void removePiece(int i, int j, char type);
 	bool checkXYInRange(int num,char cord);
 	Player();
 	void checkForCorrectType(char type, int numOfRow);
 	string* parseLine(string line, int& size,int lineNum,Error error);
 	void putMovesFileInStringArr();
 	bool move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType);
-	//void movePlayerError(int lineNum); Guy- we need this?
+	//void movePlayerError(int lineNum);  we need this?
 	void setPlayerStatus(Reason reason, Error theError, int line);
 	void setColor(Color c) {
 		color = c;

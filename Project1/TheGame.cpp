@@ -5,10 +5,6 @@ void TheGame::init()
 {
 	p[0].setColor(YELLOW);
 	p[1].setColor(RED);
-
-
-
-
 	p[0].setInputFile("player1.rps_board");
 	p[0].setMoveFile("player1.rps_moves");
 	p[0].putMovesFileInStringArr();
@@ -82,253 +78,78 @@ void TheGame::initStartBoard()
 	
 }
 
+
 int TheGame::pieceFight(int i, int j)
 {  // The function gets two indexes and checks which piece is stronger, erases the second piece, 
-	//updates the number of tools, returns 0 if a tie, 1 if the first player wins, and 2 if the second player is analyzed
+	//updates the number of tools, returns 0 if a tie, 1 if the first player wins, and 2 if the second player is analyzed, otherwise returns -1
 	char typePlayer1 = p[0].playerBoard[i][j].getPieceType();
 	char typePlayer2 = p[1].playerBoard[i][j].getPieceType();
-	bool jokerPlayer1 = p[0].playerBoard[i][j].getPieceJoker();
-	bool jokerPlayer2 = p[1].playerBoard[i][j].getPieceJoker();
-	switch (typePlayer1)
+	if ((typePlayer1 == typePlayer2) || ((typePlayer1 == 'B') || (typePlayer2 == 'B'))) //If both players have the same piece or one of the players has a bomb
 	{
-	case 'R':
-		if (typePlayer2 == 'S') //The piece of player 1 win
-		{
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[S]--;
-			return 1;
-		}
-		else if (typePlayer2 == 'P') //The piece of player 2 win
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[R]--;
-			return 2;
-		}
-		else if (typePlayer2 == 'R') //The two pieces lose
-		{
-			
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else 
-				p[0].counterPieces[R]--;
-
-			p[1].playerBoard[i][j].setPieceType('-');
-
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[R]--;
-			return 0;
-		}
-		else if (typePlayer2 == 'B') //The two pieces lose
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[B]--;
-
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[B]--;
-			return 0;
-		}
-		else if (typePlayer2 == 'F') //Player 1 capture the flag of player 2
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else 
-				p[0].counterPieces[R]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			p[1].counterPieces[F]--;
-			return 1;
-		}
-		return -1;
-		break;
-	case 'S':
-		if (typePlayer2 == 'R') //The piece of player 2 win
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[S]--;
-			return 2;
-		}
-		else if (typePlayer2 == 'P') //The piece of player 1 win
-		{
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[P]--;
-			return 1;
-		}
-		else if (typePlayer2 == 'S') // The two pieces lose
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[S]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[S]--;
-			return 0;
-		}
-		else if (typePlayer2 == 'B')//The two pieces lose
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[S]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[B]--;
-			return 0;
-		}
-		else if (typePlayer2 == 'F') //Player 1 capture the flag of player 2
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[S]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			p[1].counterPieces[F]--;
-			return 1;
-		}
-		return -1;
-		break;
-	case 'P':
-		if (typePlayer2 == 'S') //The piece of player 2 win
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[P]--;
-			return 2;
-		}
-		else if (typePlayer2 == 'R') //The piece of player 1 win
-		{
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[R]--;
-			return 1;
-		}
-		else if (typePlayer2 == 'P') //The two pieces lose
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[P]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[P]--;
-			return 0;
-		}
-		else if (typePlayer2 == 'B') //The two piece lost
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[P]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer2)
-				p[1].counterPieces[J]--;
-			else
-				p[1].counterPieces[B]--;
-			return 0;
-		}
-		else if (typePlayer2 == 'F')
-		{
-			p[0].playerBoard[i][j].setPieceType('-');
-			if (jokerPlayer1)
-				p[0].counterPieces[J]--;
-			else
-				p[0].counterPieces[P]--;
-			p[1].playerBoard[i][j].setPieceType('-');
-			p[1].counterPieces[F]--;
-			return 1;
-		}
-		return -1;
-		break;
-	case 'B': //The two pieces lose
-		p[0].playerBoard[i][j].setPieceType('-');
-		if (jokerPlayer1)
-			p[0].counterPieces[J]--;
-		else
-			p[0].counterPieces[B]--;
-		p[1].playerBoard[i][j].setPieceType('-');
-		if (jokerPlayer2)
-			p[1].counterPieces[J]--;
-		else if (typePlayer2 == 'S')
-			p[1].counterPieces[S]--;
-		else if (typePlayer2 == 'R')
-			p[1].counterPieces[R]--;
-		else if (typePlayer2 == 'P')
-			p[1].counterPieces[P]--;
-		else if (typePlayer2 == 'B')
-			p[1].counterPieces[B]--;
-		else if (typePlayer2 == 'F')
-		{
-			p[1].counterPieces[F]--;
-			return 1;
-			break;
-		}
+		p[0].removePiece(i, j, typePlayer1);
+		p[1].removePiece(i, j, typePlayer2);
 		return 0;
-		break;
-	case 'F': //Player 2 capture the flag of player 1
-		p[0].playerBoard[i][j].setPieceType('-');
-		p[0].counterPieces[F]--;
-		p[1].playerBoard[i][j].setPieceType('-');
-		if (jokerPlayer2)
-			p[1].counterPieces[J]--;
-		else if (typePlayer2 == 'S')
-			p[1].counterPieces[S]--;
-		else if (typePlayer2 == 'R')
-			p[1].counterPieces[R]--;
-		else if (typePlayer2 == 'P')
-			p[1].counterPieces[P]--;
-		else if (typePlayer2 == 'B')
-			p[1].counterPieces[B]--;
-		else if (typePlayer2 == 'F')
+	}
+	if (typePlayer1 == 'F') //Player 2 captures the flag of player 1
+	{
+		p[0].removePiece(i, j, typePlayer1);
+		p[1].removePiece(i, j, typePlayer2);
+		return 2;
+	}
+	if (typePlayer1 == 'F') //Player 1 captures the flag of player 2
+	{
+		p[0].removePiece(i, j, typePlayer1);
+		p[1].removePiece(i, j, typePlayer2);
+		return 1;
+	}
+	else
+	{
+		switch (typePlayer1)
 		{
-			p[1].counterPieces[F]--;
-			return 0;
+		case 'R':
+			if (typePlayer2 == 'S') //The piece of player 1 win
+			{
+				p[1].removePiece(i, j, typePlayer2);
+				return 1;
+			}
+			else if (typePlayer2 == 'P') //The piece of player 2 win
+			{
+				p[0].removePiece(i, j, typePlayer1);
+				return 2;
+			}
+			return -1;
+			break;
+		case 'S':
+			if (typePlayer2 == 'R') //The piece of player 2 win
+			{
+				p[0].removePiece(i, j, typePlayer1);
+				return 2;
+			}
+			else if (typePlayer2 == 'P') //The piece of player 1 win
+			{
+				p[1].removePiece(i, j, typePlayer2);
+				return 1;
+			}
+			return -1;
+			break;
+		case 'P':
+			if (typePlayer2 == 'S') //The piece of player 2 win
+			{
+				p[0].removePiece(i, j, typePlayer1);
+				return 2;
+			}
+			else if (typePlayer2 == 'R') //The piece of player 1 win
+			{
+				p[1].removePiece(i, j, typePlayer2);
+				return 1;
+			}
+			return -1;
+			break;
+		default:
+			return -1;
 			break;
 		}
-			
-		return 2;
-		break;
-	default:
-		return -1;
-		break;
 	}
-
-
 }
 
 void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)
@@ -354,30 +175,32 @@ void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)
 void TheGame::checkForWinner() 
 {
 	int i,  numPlayer, counter = 0;
-	for (numPlayer = 0; numPlayer < this->numOfPlayers; numPlayer++)
+	for (numPlayer = 0; numPlayer < numOfPlayers; numPlayer++)
 	{
 		if (p[numPlayer].status != noReason)
 		{
-			//p[abs(numPlayer - 1)].win = true;
 			over = true;
 		}
-		counter = 0;
-		for (i = 0; i <= 3; i++)
+		else
 		{
-			counter += p[numPlayer].counterPieces[i];
-		}
+			counter = 0;
+			for (i = 0; i <= 3; i++)
+			{
+				counter += p[numPlayer].counterPieces[i];
+			}
+			if (counter == 0)
+			{
+				p[numPlayer].status = allEaten;
+				over = true;
 
-		if ((counter == 0)&&(!over))
-		{
-			p[numPlayer].status = allEaten;
-			over = true;
-			//p[abs(numPlayer - 1)].win = true;
-		}
-		if ((p[numPlayer].counterPieces[F] == 0) &&(!over))
-		{
-			p[numPlayer].status = flagsCaptured;
-			over = true;
-			//p[abs(numPlayer - 1)].win = true;
+			}
+			if (p[numPlayer].counterPieces[F] == 0)
+			{
+				p[numPlayer].status = flagsCaptured;
+				over = true;
+
+			}
+
 		}
 	}
 	if (over)
@@ -395,23 +218,6 @@ void TheGame::checkForWinner()
 			winner = 2;
 		}
 	}
-	/*
-	if (p[0].win &&p[1].win)
-	{
-		winner = 0; //The game is over and the two player win, this mean tie
-		over = true;
-	}
-	else if (p[0].win)
-	{
-		winner = 1; //The game is over and player 1 win
-		over = true;
-	}
-	else if (p[1].win)
-	{
-		winner = 2; //The game is over and player 2 win
-		over = true;
-	}
-	*/
 }
 
 void TheGame::printToScreen(bool start)
@@ -419,7 +225,7 @@ void TheGame::printToScreen(bool start)
 	int i;
 	
 	if (start)
-		gotoxy(1, 23);
+		gotoxy(1, 25);
 	for (i = 0; i < numOfPlayers; i++)
 	{
 		cout << "\nThe Errors of player number " << i + 1 << ": ";
@@ -434,16 +240,14 @@ void TheGame::run()
 	bool start = false;
 	init();
 	checkForWinner();
-	if (!over)
+	if ((p[0].status!=badPosition)&& (p[1].status != badPosition))
 	{
 		start = true;
 		drawGameBoard();
-		
 	}
 	while (!over)
 	{
 		move(moveNum++);
-		//checkForWinner();
 	}
 	printToScreen(start);
 	createOutputFile();
@@ -608,19 +412,19 @@ void TheGame::createOutputFile()
 		outfile << "Reason: " ;
 		if (winner == 1)
 		{
-			outfile << p[1].returnReason();
-			if ((p[1].status == badPosition) || (p[1].status == badMoves))
+			outfile << p[1].returnReason() << "for player 2 ";
+			if (p[1].errorLine!=0)
 			{
-				outfile << "player 2 line " << p[1].errorLine;
+				outfile << "line " << p[1].errorLine;
 			}
 		}
 
 		else if (winner == 2)
 		{
-			outfile << p[0].returnReason();
-			if ((p[0].status == badPosition) || (p[0].status == badMoves))
+			outfile << p[0].returnReason() << "for player 1 ";
+			if (p[0].errorLine!=0)
 			{
-				outfile << "player 1 line " << p[0].errorLine;
+				outfile << "line " << p[0].errorLine;
 			}
 		}
 		else if (winner == 0)
@@ -629,43 +433,49 @@ void TheGame::createOutputFile()
 			{
 				if (p[0].status==badPosition)
 					outfile << "Bad Positioning input files for both players- player 1: line " << p[0].errorLine << ", player 2: line " << p[1].errorLine;
-				if (p[0].status == moveFilesDone)
+				if ((p[0].status == moveFilesDone) || (p[0].status==flagsCaptured) || (p[0].status==allEaten))
 					outfile << "A tie - both Moves input files done without a winner";
+
 			}
 		
 			else
 			{
 				outfile << p[0].returnReason();
-				if ((p[0].status == badPosition) || (p[0].status == badMoves))
+				if (p[0].errorLine != 0)
 				{
 					outfile << " player 1 line " << p[0].errorLine;
 				}
-				outfile << p[1].returnReason();
-				if ((p[1].status == badPosition) || (p[1].status == badMoves))
+				outfile << " and "<< p[1].returnReason();
+				if (p[1].errorLine != 0)
 				{
 					outfile << " player 2 line " << p[1].errorLine;
 				}
 			}
 		}
 		outfile << "\n\n";
-		for (int j = 1; j < 11; j++)
+		if ((p[0].status != badPosition) && (p[1].status != badPosition))
 		{
-			outfile << "|";
-			for (int i = 1; i < 11; i++)
+			for (int j = 1; j < 11; j++)
 			{
-				if (gameBoard[i][j].getPieceType() != '-')
+				outfile << "|";
+				for (int i = 1; i < 11; i++)
 				{
-					outfile << " " << gameBoard[i][j].getPieceType() << " |";
+					if (gameBoard[i][j].getPieceType() != '-')
+					{
+						outfile << " " << gameBoard[i][j].getPieceType() << " |";
+					}
+					else
+						outfile << "    |";
 				}
-				else
-					outfile << "   |";
+				outfile << "\n";
 			}
-			outfile << "\n";
+
 		}
+
 		outfile.close();
 	}
 	else {
-		//file error
+		//error file
 	}
 }
 void TheGame::drawBoardLines()

@@ -206,7 +206,7 @@ void Player::readFromFile()
 		numOfRows++;
 		if (numOfRows > K)
 		{
-			setPlayerStatus(badPosition, tooManyRows, 0);
+			setPlayerStatus(badPosition, tooManyRows, numOfRows);
 			illegalFile = true;
 			return;
 		}
@@ -307,9 +307,6 @@ void Player::readFromFile()
 
 
 
-
-
-
 void Player::checkValidityiPieces()
 {
 	//The print is just for checking how many pieces each type there is for the each player
@@ -318,7 +315,6 @@ void Player::checkValidityiPieces()
 		counterPieces[S] > NUM_OF_SCISSORS || counterPieces[F] > NUM_OF_FLAG)
 	{
 		setPlayerStatus(badPosition, tooManyPieces, 0); //-	A PIECE type appears in file more than its number
-
 	}
 	if (counterPieces[F] < 1)
 	{
@@ -326,9 +322,32 @@ void Player::checkValidityiPieces()
 	}
 }
 
-void removePiece()
+void Player::removePiece(int i, int j, char type)
 {
-
+	playerBoard[i][j].setPieceType('-');
+	if (playerBoard[i][j].getPieceJoker())
+	{
+		counterPieces[J]--;
+		return;
+	}
+	else
+	{
+		switch (type)
+		{
+		case 'R':
+			counterPieces[R]--;
+			break;
+		case 'S':
+			counterPieces[S]--;
+			break;
+		case 'P':
+			counterPieces[P]--;
+			break;
+		case 'B':
+			counterPieces[B]--;
+			break;
+		}
+	}
 }
 void Player::countPieces(char type)
 {
@@ -400,7 +419,7 @@ void Player::printError()
 		cout << "Unknow piece was inserted in line:" << errorLine << " in the input file\n";
 		break;
 	case 6:
-		cout << "Too many rows inserted in the input file in line:" << errorLine << "\n";
+		cout << "Too many rows inserted in the input file \n";
 		break;
 	case 7:
 		cout << "The format of row " << errorLine << " in the input file is invalid\n";
@@ -430,7 +449,12 @@ void Player::printError()
 		cout << "Unknow piece was inserted for joker in line:" << errorLine << " in the input file\n";
 		break;
 	default:
-		cout << "Not exsit errors to this player\n";
+		if (status==allEaten)
+			cout << "All the pieces were eaten\n";
+		else if (status==flagsCaptured)
+			cout << "All the flags were caught\n";
+		else
+			cout << "Not exsit errors to this player\n";
 		break;
 	}
 }
@@ -449,10 +473,10 @@ string Player::returnReason()
 		return "All moving PIECEs of the opponent are eaten";
 		break;
 	case badPosition:
-		return "Bad Positioning input file for ";
+		return "Bad Positioning input file ";
 		break;
 	case badMoves:
-		return "Bad Moves input file for ";
+		return "Bad Moves input file ";
 		break;
 	default:
 		return "No reason";

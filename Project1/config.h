@@ -7,6 +7,5 @@
 #define WINDOWS
 
 // make sure to always submit a readme file in English, with student names and ids
-
 // if you put the above #define WINDOWS in comment for compilation in MAMA - remind us in the readme file that we need to take it out of comment!
 

@@ -7,11 +7,10 @@
 #define TIE 0
 class TheGame
 {
-	int numOfPlayers = 2; //Guy- we need this?
+	int numOfPlayers;
 	Player p[2];
 	int winner;
 	Piece gameBoard[N+1][M+1]; //need to check if we actually need this board
-	//Reason reason;
 	int showMode;
 	int delayTime;
 	bool showOnlyKnownInfo;
@@ -26,6 +25,7 @@ public:
 	TheGame() 
 	{
 		winner = 0;
+		numOfPlayers = 2;
 		over = false;
 		showMode = 2;
 		delayTime = 50;
