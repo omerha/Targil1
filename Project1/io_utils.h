@@ -7,7 +7,25 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <windows.h>
+class OriginalColors
+{
+	HANDLE hConsoleHandle;
+	CONSOLE_SCREEN_BUFFER_INFO *ConsoleInfo;
+	WORD saveOriginalColors;
+public:
+	OriginalColors()
+	{
+		HANDLE hConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO *ConsoleInfo = new CONSOLE_SCREEN_BUFFER_INFO();
+		GetConsoleScreenBufferInfo(hConsoleHandle, ConsoleInfo);
+		saveOriginalColors = ConsoleInfo->wAttributes;
+	}
+	~OriginalColors()
+	{
+		SetConsoleTextAttribute(hConsoleHandle, saveOriginalColors);
+	}
+};
 void gotoxy(int x, int y);
 void setTextColor(Color color);
 void setTextbBackground(Color colorToSet);

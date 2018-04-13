@@ -203,7 +203,6 @@ void Player::readFromFile()
 	}
 	while (!inFile.eof() && !illegalFile )
 	{
-		numOfRows++;
 		if (numOfRows > K)
 		{
 			setPlayerStatus(badPosition, tooManyRows, numOfRows);
@@ -212,97 +211,94 @@ void Player::readFromFile()
 		}
 		else if (getline(inFile, tmpRead))
 		{
-			inputIndex = 0;
-			getInput = parseLine(tmpRead, inputIndex, numOfRows, wrongFormatRowInputFile);
-			if ((inputIndex == 3) || (inputIndex == 4))
+			if (!tmpRead.empty())
 			{
+				numOfRows++;
+				inputIndex = 0;
+				getInput = parseLine(tmpRead, inputIndex, numOfRows, wrongFormatRowInputFile);
+				if ((inputIndex == 3) || (inputIndex == 4))
+				{
 
-				type = getInput[0][0];
-				if (isdigit(getInput[1][0]) && isdigit(getInput[2][0]))
-				{
-					xLocation = stoi(getInput[1]);
-					yLocation = stoi(getInput[2]);
-				}
-				else
-				{
-					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
-					return;
-				}
-				if (!(checkXYInRange(yLocation, 'Y') && checkXYInRange(xLocation, 'X')))
-				{
-					setPlayerStatus(badPosition, notInRange, numOfRows);
-					return;
-				}
-				if (this->playerBoard[xLocation][yLocation].getPieceType() != '-') // There is a piece in this location
-				{
-					setPlayerStatus(badPosition, sameLocation, numOfRows);
-					return;
-				}
-				this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
-				this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
-			}
-			else
-			{
-				if (inputIndex) {
-					setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
-					return;
-				}
-			}
-			if (inputIndex == 4)
-			{
-				if (getInput[0][0] == 'J')
-				{
-					playerBoard[xLocation][yLocation].setPieceJoker(true);
-					countPieces('J');
-					type = getInput[3][0];
-					if ((type != 'P') && (type != 'R') && (type != 'S') && (type != 'B'))
+					type = getInput[0][0];
+					if (isdigit(getInput[1][0]) && isdigit(getInput[2][0]))
 					{
-						setPlayerStatus(badPosition, unKnownPieceForJoker, numOfRows);
+						xLocation = stoi(getInput[1]);
+						yLocation = stoi(getInput[2]);
+					}
+					else
+					{
+						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows);
 						return;
 					}
-					else playerBoard[xLocation][yLocation].setPieceType(type);
-
+					if (!(checkXYInRange(yLocation, 'Y') && checkXYInRange(xLocation, 'X')))
+					{
+						setPlayerStatus(badPosition, notInRange, numOfRows);
+						return;
+					}
+					if (this->playerBoard[xLocation][yLocation].getPieceType() != '-') // There is a piece in this location
+					{
+						setPlayerStatus(badPosition, sameLocation, numOfRows);
+						return;
+					}
+					this->playerBoard[xLocation][yLocation].setPieceX(xLocation);
+					this->playerBoard[xLocation][yLocation].setPieceY(yLocation);
 				}
 				else
 				{
-					setPlayerStatus(badPosition, unKnownPiece, numOfRows);
-					return;
-
+					if (inputIndex) {
+						setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // the length line isn't 3 or 4 chars
+						return;
+					}
 				}
-			}
-			else if(inputIndex == 3)
-			{
-				checkForCorrectType(type, numOfRows);
-				if (status == noReason)
+				if (inputIndex == 4)
 				{
-					playerBoard[xLocation][yLocation].setPieceType(type);
-					countPieces(type);
+					if (getInput[0][0] == 'J')
+					{
+						playerBoard[xLocation][yLocation].setPieceJoker(true);
+						countPieces('J');
+						type = getInput[3][0];
+						if ((type != 'P') && (type != 'R') && (type != 'S') && (type != 'B'))
+						{
+							setPlayerStatus(badPosition, unKnownPieceForJoker, numOfRows);
+							return;
+						}
+						else playerBoard[xLocation][yLocation].setPieceType(type);
+
+					}
+					else
+					{
+						setPlayerStatus(badPosition, unKnownPiece, numOfRows);
+						return;
+
+					}
 				}
-				else // //If the piece type isn't one of the pieces in the game
+				else if (inputIndex == 3)
 				{
-					setPlayerStatus(badPosition, unKnownPiece, numOfRows);
+					checkForCorrectType(type, numOfRows);
+					if (status == noReason)
+					{
+						playerBoard[xLocation][yLocation].setPieceType(type);
+						countPieces(type);
+					}
+					else // //If the piece type isn't one of the pieces in the game
+					{
+						setPlayerStatus(badPosition, unKnownPiece, numOfRows);
+						return;
+					}
+
+				}
+				if ((inputIndex == 0) && (numOfRows == 1)) /////////////////Not working!
+				{
+					setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
 					return;
 				}
-
+				delete[] getInput;
 			}
-			if ((inputIndex == 0) && (numOfMoves == 1)) /////////////////Not working!
-			{
-				setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
-				return;
-			}
-
-				
-				
-	
-
 		}
-
 	}
 
 	if (numOfRows == 0)
 			setPlayerStatus(badPosition, wrongFormatRowInputFile, numOfRows); // error input
-	if (!tmpRead.empty())
-		delete[] getInput;
 }
 
 

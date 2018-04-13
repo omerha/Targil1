@@ -223,8 +223,8 @@ void TheGame::checkForWinner()
 void TheGame::printToScreen(bool start)
 {
 	int i;
-	
-	if (start)
+
+	if (start && showMode!=QUIET_MODE)
 		gotoxy(1, 25);
 	for (i = 0; i < numOfPlayers; i++)
 	{
@@ -236,6 +236,7 @@ void TheGame::printToScreen(bool start)
 }
 void TheGame::run()
 {
+	
 	int moveNum = 0;
 	bool start = false;
 	init();
@@ -243,12 +244,14 @@ void TheGame::run()
 	if ((p[0].status!=badPosition)&& (p[1].status != badPosition))
 	{
 		start = true;
+		if(showMode != QUIET_MODE)
 		drawGameBoard();
 	}
 	while (!over)
 	{
 		move(moveNum++);
 	}
+
 	printToScreen(start);
 	createOutputFile();
 }
