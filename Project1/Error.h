@@ -17,5 +17,8 @@ enum Error
 	emptyFile = 12,
 	moveIllegal = 13,
 	notExistFile=14,
-	unKnownPieceForJoker=15
+	unKnownPieceForJoker=15,
+	jokerNotInRange=16,
+	bombCantMove=17,
+	flagCantMove=18
 };

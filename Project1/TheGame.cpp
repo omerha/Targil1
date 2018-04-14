@@ -198,9 +198,7 @@ void TheGame::checkForWinner()
 			{
 				p[numPlayer].status = flagsCaptured;
 				over = true;
-
 			}
-
 		}
 	}
 	if (over)
@@ -223,20 +221,19 @@ void TheGame::checkForWinner()
 void TheGame::printToScreen(bool start)
 {
 	int i;
-
-	if (start && showMode!=QUIET_MODE)
+	if (start&& showMode != QUIET_MODE)
 		gotoxy(1, 25);
+	setTextbBackground(RED);
+	setTextColor(WHITE);
 	for (i = 0; i < numOfPlayers; i++)
 	{
 		cout << "\nThe Errors of player number " << i + 1 << ": ";
-	
-		p[i].setColor(WHITE);
 		p[i].printError();
 	}
 }
+
 void TheGame::run()
 {
-	
 	int moveNum = 0;
 	bool start = false;
 	init();
@@ -244,14 +241,13 @@ void TheGame::run()
 	if ((p[0].status!=badPosition)&& (p[1].status != badPosition))
 	{
 		start = true;
-		if(showMode != QUIET_MODE)
+		if (showMode != QUIET_MODE)
 		drawGameBoard();
 	}
 	while (!over)
 	{
 		move(moveNum++);
 	}
-
 	printToScreen(start);
 	createOutputFile();
 }
@@ -261,13 +257,10 @@ void TheGame::move(int moveNum)
 	int i;
 	int newX = 0, newY = 0, oldX = 0, oldY = 0, jokerX = 0, jokerY = 0;
 	char newJokerType = '-';
-	//bool isValid = true;
 	if ((p[0].numOfMoves < moveNum) && (p[1].numOfMoves < moveNum))
 	{
 		over = true;
 		p[0].status = p[1].status = moveFilesDone;
-		//checkForWinner();
-
 	}
 	for (i = 0; i < numOfPlayers && !over; i++)
 	{
@@ -282,8 +275,6 @@ void TheGame::move(int moveNum)
 			movePiece(oldX, oldY, newX, newY, i,jokerX,jokerY,newJokerType);
 
 		}
-		
-
 			checkForWinner();
 			//the printing is just for cheaking
 			/*
@@ -297,10 +288,7 @@ void TheGame::move(int moveNum)
 			cout << "the error: " << p[1].error << "\n";
 			cout << "the error line: " << p[1].errorLine << "\n";
 			*/
-		
-
 	}
-
 }
 
 void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, const int & newY,const int& playerNum, const int& jokerX, const int& jokerY, const char& newJokerType)
@@ -319,9 +307,20 @@ void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, co
 	}
 	if (newJokerType != '-')
 	{
-		p[playerNum].playerBoard[jokerX][jokerY].setPieceJoker(true);
-		p[playerNum].playerBoard[jokerX][jokerY].setPieceType(newJokerType);
-		gameBoard[jokerX][jokerY].setPieceType(newJokerType);
+		if (p[playerNum].playerBoard[oldX][oldY].getPieceJoker())
+		{
+			p[playerNum].playerBoard[oldX][oldY].setPieceJoker(false);
+			p[playerNum].playerBoard[newX][newY].setPieceJoker(true);
+			p[playerNum].playerBoard[newX][newY].setPieceType(newJokerType);
+			gameBoard[oldX][oldY].setPieceJoker(false);
+			gameBoard[newX][newY].setPieceJoker(true);
+			gameBoard[newX][newY].setPieceType(newJokerType);
+		}
+		else {
+			//p[playerNum].playerBoard[jokerX][jokerY].setPieceJoker(true);
+			p[playerNum].playerBoard[jokerX][jokerY].setPieceType(newJokerType);
+			gameBoard[jokerX][jokerY].setPieceType(newJokerType);
+		}
 	}
 	if (showMode != QUIET_MODE)
 	{
@@ -380,7 +379,6 @@ void TheGame::drawPiece(const int & oldX, const int & oldY, const int & newX, co
 		{
 			p[secondPlayerIndex].playerBoard[newX][newY].removePiece(newX, newY);
 		}
-
 	}
 }
 
@@ -406,6 +404,8 @@ void TheGame::drawGameBoard()
 	}
 }
 
+
+
 void TheGame::createOutputFile()
 {
 	ofstream outfile("output.txt");
@@ -421,7 +421,6 @@ void TheGame::createOutputFile()
 				outfile << "line " << p[1].errorLine;
 			}
 		}
-
 		else if (winner == 2)
 		{
 			outfile << p[0].returnReason() << "for player 1 ";
@@ -438,9 +437,7 @@ void TheGame::createOutputFile()
 					outfile << "Bad Positioning input files for both players- player 1: line " << p[0].errorLine << ", player 2: line " << p[1].errorLine;
 				if ((p[0].status == moveFilesDone) || (p[0].status==flagsCaptured) || (p[0].status==allEaten))
 					outfile << "A tie - both Moves input files done without a winner";
-
 			}
-		
 			else
 			{
 				outfile << p[0].returnReason();
@@ -472,13 +469,12 @@ void TheGame::createOutputFile()
 				}
 				outfile << "\n";
 			}
-
 		}
-
 		outfile.close();
 	}
 	else {
-		//error file
+		cout << "error";
+
 	}
 }
 void TheGame::drawBoardLines()
