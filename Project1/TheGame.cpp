@@ -156,19 +156,27 @@ void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)
 {
 	if (fightResult == 0) //It means that both players lost
 	{
-		this->gameBoard[xLoc][yLoc].setPieceType('-');
+		gameBoard[xLoc][yLoc].setPieceType('-');
 		p[0].playerBoard[xLoc][yLoc].setPieceType('-');
+		p[0].playerBoard[xLoc][yLoc].setPieceJoker(false);
 		p[1].playerBoard[xLoc][yLoc].setPieceType('-');
+		p[1].playerBoard[xLoc][yLoc].setPieceJoker(false);
+		gameBoard[xLoc][yLoc].setPieceJoker(false);
+	
 	}
 	if (fightResult == 1) ///It means that player 1 wins in this square
 	{
-		this->gameBoard[xLoc][yLoc].setPieceType(p[0].playerBoard[xLoc][yLoc].getPieceType());
+		gameBoard[xLoc][yLoc].setPieceType(p[0].playerBoard[xLoc][yLoc].getPieceType());
+		gameBoard[xLoc][yLoc].setPieceJoker(p[0].playerBoard[xLoc][yLoc].getPieceJoker());
 		p[1].playerBoard[xLoc][yLoc].setPieceType('-');
+		p[1].playerBoard[xLoc][yLoc].setPieceJoker(false);
 	}
 	else if (fightResult == 2) //It means that player 2 wins in this square
 	{
-		this->gameBoard[xLoc][yLoc].setPieceType(p[1].playerBoard[xLoc][yLoc].getPieceType());
+		gameBoard[xLoc][yLoc].setPieceType(p[1].playerBoard[xLoc][yLoc].getPieceType());
+		gameBoard[xLoc][yLoc].setPieceJoker(p[1].playerBoard[xLoc][yLoc].getPieceJoker());
 		p[0].playerBoard[xLoc][yLoc].setPieceType('-');
+		p[0].playerBoard[xLoc][yLoc].setPieceJoker(false);
 	}
 }
 
@@ -298,23 +306,29 @@ void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, co
 	{
 		fightRes = pieceFight(newX, newY);
 		setFightResult(fightRes, newX, newY);
-		this->gameBoard[oldX][oldY].setPieceType('-');
 	}
 	else
 	{
 		gameBoard[newX][newY].setPieceType(gameBoard[oldX][oldY].getPieceType());
-		gameBoard[oldX][oldY].setPieceType('-');
+		gameBoard[newX][newY].setPieceJoker(gameBoard[oldX][oldY].getPieceJoker());
 	}
+	gameBoard[oldX][oldY].setPieceType('-');
+	gameBoard[oldX][oldY].setPieceJoker(false);
 	if (newJokerType != '-')
 	{
 		if (p[playerNum].playerBoard[oldX][oldY].getPieceJoker())
 		{
 			p[playerNum].playerBoard[oldX][oldY].setPieceJoker(false);
-			p[playerNum].playerBoard[newX][newY].setPieceJoker(true);
-			p[playerNum].playerBoard[newX][newY].setPieceType(newJokerType);
-			gameBoard[oldX][oldY].setPieceJoker(false);
-			gameBoard[newX][newY].setPieceJoker(true);
-			gameBoard[newX][newY].setPieceType(newJokerType);
+			if (playerNum == fightRes - 1 || fightRes == -1)
+			{
+				p[playerNum].playerBoard[newX][newY].setPieceJoker(true);
+				gameBoard[newX][newY].setPieceJoker(true);
+				if (newX == jokerX && newY == jokerY)
+				{
+					p[playerNum].playerBoard[newX][newY].setPieceType(newJokerType);
+					gameBoard[newX][newY].setPieceType(newJokerType);
+				}
+			}
 		}
 		else {
 			//p[playerNum].playerBoard[jokerX][jokerY].setPieceJoker(true);
@@ -455,20 +469,7 @@ void TheGame::createOutputFile()
 		outfile << "\n\n";
 		if ((p[0].status != badPosition) && (p[1].status != badPosition))
 		{
-			for (int j = 1; j < 11; j++)
-			{
-				outfile << "|";
-				for (int i = 1; i < 11; i++)
-				{
-					if (gameBoard[i][j].getPieceType() != '-')
-					{
-						outfile << " " << gameBoard[i][j].getPieceType() << " |";
-					}
-					else
-						outfile << "    |";
-				}
-				outfile << "\n";
-			}
+			drawBoardToFile(outfile);
 		}
 		outfile.close();
 	}
@@ -476,6 +477,33 @@ void TheGame::createOutputFile()
 		cout << "error";
 
 	}
+}
+void TheGame::drawBoardToFile(ofstream& outfile)
+{
+	for (int j = 1; j < 11; j++)
+			{
+				outfile << "|";
+				for (int i = 1; i < 11; i++)
+				{
+					if (p[0].playerBoard[i][j].getPieceType() != '-')
+					{
+						if (p[0].playerBoard[i][j].getPieceJoker())
+							outfile << " " << 'j' << " |";
+						else
+							outfile << " " << tolower(p[0].playerBoard[i][j].getPieceType()) << " |";
+					}
+					else if (p[1].playerBoard[i][j].getPieceType() != '-')
+					{
+						if (p[1].playerBoard[i][j].getPieceJoker())
+							outfile << " " << 'J' << " |";
+						else
+							outfile << " " << p[1].playerBoard[i][j].getPieceType() << " |";
+					}
+					else
+						outfile << "    |";
+				}
+				outfile << "\n";
+			}
 }
 void TheGame::drawBoardLines()
 {

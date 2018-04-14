@@ -150,7 +150,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 						setPlayerStatus(badMoves, jokerNotInRange, moveNum+1);
 						return false;
 					}
-					else if (playerBoard[xJoker][yJoker].getPieceJoker())
+					else if (playerBoard[xJoker][yJoker].getPieceJoker() || (playerBoard[currX][currY].getPieceJoker() && xJoker == newX && yJoker == newY))
 					{
 						if ((nJokerType != 'P') && (nJokerType != 'R') && (nJokerType != 'S') && (nJokerType != 'B'))
 						{
