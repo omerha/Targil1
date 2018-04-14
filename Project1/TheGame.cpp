@@ -15,7 +15,6 @@ void TheGame::init()
 
 	for (int i = 0; i < this->numOfPlayers; i++)
 	{
-		//goodToInitBoard = true;
 		p[i].readFromFile();
 
 		if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
@@ -29,21 +28,6 @@ void TheGame::init()
 		else
 			goodToInitBoard = false;
 	}	
-	
-	 // The printing is just for checking the status and the error print after reading the input file
-	/*
-	cout << "Input File: \n";
-	cout << "----The player number " << 1 << " -----\n";
-	cout << "the status: " << p[0].status << "\n";
-
-	cout << "the error: " << p[0].error << "\n";
-	cout << "the error line: " << p[0].errorLine << "\n";
-	cout << "----The player number " << 2 << " -----\n";
-	cout << "the status: " << p[1].status << "\n";
-
-	cout << "the error: " << p[1].error << "\n";
-	cout << "the error line: " << p[1].errorLine << "\n";
-	*/
 	if (goodToInitBoard)
 		initStartBoard();
 }
@@ -275,27 +259,9 @@ void TheGame::move(int moveNum)
 		newJokerType = '-';
 		if (p[i].move(moveNum, newX, newY, oldX, oldY, jokerX, jokerY, newJokerType))
 		{
-		/*	if (newJokerType != '-')//means the player wants to change the joker.
-			{
-				if (gameBoard[jokerX][jokerY].getPieceType() != '-')
-					gameBoard[jokerX][jokerY].setPieceType(newJokerType);
-			}*/
 			movePiece(oldX, oldY, newX, newY, i,jokerX,jokerY,newJokerType);
-
 		}
 			checkForWinner();
-			//the printing is just for cheaking
-			/*
-			cout << "\n"<< "Move File" << "\n";
-			cout << "----The player number " << 1 << " -----\n";
-			cout << "the status: " << p[0].status << "\n";
-			cout << "the error: " << p[0].error << "\n";
-			cout << "the error line: " << p[0].errorLine << "\n";
-			cout << "----The player number " << 2 << " -----\n";
-			cout << "the status: " << p[1].status << "\n";
-			cout << "the error: " << p[1].error << "\n";
-			cout << "the error line: " << p[1].errorLine << "\n";
-			*/
 	}
 }
 
@@ -338,6 +304,7 @@ void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, co
 	}
 	if (showMode != QUIET_MODE)
 	{
+		Sleep(delayTime);
 		drawPiece(oldX, oldY, newX, newY, playerNum,fightRes);
 	}
 }
@@ -496,9 +463,9 @@ void TheGame::drawBoardToFile(ofstream& outfile)
 					else if (p[1].playerBoard[i][j].getPieceType() != '-')
 					{
 						if (p[1].playerBoard[i][j].getPieceJoker())
-							outfile << " " << 'J' << " |";
+							outfile << " " << 'J' << "  |";
 						else
-							outfile << " " << p[1].playerBoard[i][j].getPieceType() << " |";
+							outfile << " " << p[1].playerBoard[i][j].getPieceType() << "  |";
 					}
 					else
 						outfile << "    |";

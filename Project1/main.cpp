@@ -23,7 +23,7 @@ int main(int argc,char* argv[])
 			playerShow = 0;
 		else if (!strcmp(argv[i], "-show-all"))
 			playerShow = 3;
-		else if (!strcmp(argv[i], "-show-only-know-info"))
+		else if (!strcmp(argv[i], "-show-only-known-info"))
 			showOnlyKnownInfo = true;
 		else if (!strcmp(argv[i], "-show"))
 		{
@@ -55,7 +55,8 @@ int main(int argc,char* argv[])
 		cout << "You can't insert presentation mode arguments and non-presentation mode arguments together";
 	else
 	{
-		theGame.setDelayMode(timeToDelay);
+		if (timeToDelay)
+			theGame.setDelayMode(timeToDelay);
 		theGame.setShowMode(playerShow);
 		theGame.setUnkownInfoMode(showOnlyKnownInfo);
 	}
