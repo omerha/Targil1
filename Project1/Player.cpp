@@ -103,6 +103,11 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 			setPlayerStatus(badMoves, wrongFrormatRowMoveFile, moveNum+1); 
 			return false;
 		}
+		if (playerBoard[newX][newY].getPieceType() != '-')
+		{
+			setPlayerStatus(badMoves, sameLocation, moveNum + 1);
+			return false;
+		}
 		if (!(checkXYInRange(currX, 'X') && checkXYInRange(newX, 'X') && checkXYInRange(newY, 'Y') && checkXYInRange(currY, 'Y')))
 		{
 			setPlayerStatus(badMoves, notInRange, moveNum+1); //error x y not in range.
@@ -425,7 +430,10 @@ void Player::printError()
 			cout << "The coordinates in line:" << errorLine << " in the move file are not in the range of the board\n";
 		break;
 	case 2:
-		cout << "The coordinates inserted in line:" << errorLine << " in the input file already have a piece in the board\n";
+		if (status == badPosition)
+			cout << "The coordinates inserted in line:" << errorLine << " in the input file already have a piece in the board\n";
+		else
+			cout << "There is a piece in the place that inserted in line:" << errorLine << " in the move file\n";
 		break;
 	case 3:
 		cout << "Too many pieces of the same type were inserted in the input file\n";
@@ -476,10 +484,12 @@ void Player::printError()
 		cout << "The flag in line:" << errorLine << " in the move file can't move\n";
 		break;
 	default:
-		if (status==allEaten)
+		if (status == allEaten)
 			cout << "All the pieces were eaten\n";
-		else if (status==flagsCaptured)
+		else if (status == flagsCaptured)
 			cout << "All the flags were caught\n";
+		else if (status == moveFilesDone)
+			cout << " The player's moves have ended";
 		else
 			cout << "There are no errors for this player\n";
 		break;

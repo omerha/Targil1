@@ -96,7 +96,7 @@ int TheGame::pieceFight(int i, int j)
 		p[1].removePiece(i, j, typePlayer2);
 		return 2;
 	}
-	if (typePlayer1 == 'F') //Player 1 captures the flag of player 2
+	if (typePlayer2 == 'F') //Player 1 captures the flag of player 2
 	{
 		p[0].removePiece(i, j, typePlayer1);
 		p[1].removePiece(i, j, typePlayer2);
@@ -488,9 +488,9 @@ void TheGame::drawBoardToFile(ofstream& outfile)
 					if (p[0].playerBoard[i][j].getPieceType() != '-')
 					{
 						if (p[0].playerBoard[i][j].getPieceJoker())
-							outfile << " " << 'j' << " |";
+							outfile << " " << 'j' << "  |";
 						else
-							outfile << " " << tolower(p[0].playerBoard[i][j].getPieceType()) << " |";
+							outfile << " " << (char)(p[0].playerBoard[i][j].getPieceType()+32) << "  |";
 					}
 					else if (p[1].playerBoard[i][j].getPieceType() != '-')
 					{
