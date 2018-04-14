@@ -190,7 +190,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 				return false;
 			}
 		}
-	
+		playerBoard[newX][newY].setRevealType(playerBoard[currX][currY].getRevealType());
 		playerBoard[newX][newY].setPieceType(playerBoard[currX][currY].getPieceType());
 		playerBoard[currX][currY].setPieceType('-');
 		oldXLocation = currX;

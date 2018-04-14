@@ -10,7 +10,7 @@ int _getch(void) { return 0; }
 int _kbhit(void) { return 0; }
 void Sleep(unsigned long) {}
 void setTextColor(Color color) {}
-void setTextRemoveColor() {}
+void setTextRemoveColor(Color color) {}
 void setTextbBackground(Color colorToSet) {}
 void hideCursor() {}
 void clear_screen() {}
@@ -33,9 +33,9 @@ void setTextbBackground(Color colorToSet)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)colorToSet|BACKGROUND_BLUE);
 }
-void setTextRemoveColor()
+void setTextRemoveColor(Color color)
 {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),0);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color);
 }
 void hideCursor()
 {

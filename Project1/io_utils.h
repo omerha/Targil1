@@ -31,7 +31,7 @@ void setTextColor(Color color);
 void setTextbBackground(Color colorToSet);
 void hideCursor();
 void clear_screen();
-void setTextRemoveColor();
+void setTextRemoveColor(Color color);
 #ifndef WINDOWS	
 	int _getch(void);
 	int _kbhit(void);

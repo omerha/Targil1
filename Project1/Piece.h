@@ -12,11 +12,14 @@ class Piece
 	int x, y;
 	char pieceType;
 	bool joker;
-	bool revealJoker = true;
+	bool revealType;
+	bool revealJoker;
 public: 
 
 	Piece()
 	{
+		revealJoker = true;
+		revealType = false;
 		x = y = 0;
 		joker = false;
 		pieceType = '-';
@@ -61,6 +64,16 @@ public:
 	{
 		return revealJoker;
 	}
+	void setRevealType(bool nRevealType)
+	{
+		revealType = nRevealType;
+	}
+	bool getRevealType()
+	{
+		return revealType;
+	}
+
+
 	void drawPiece(int xL,int yL);
 	void removePiece(int xL, int yL);
 	void drawPiece(Color color, int xL, int yL);

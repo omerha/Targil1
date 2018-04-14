@@ -333,7 +333,10 @@ void TheGame::drawPiece(const int & oldX, const int & oldY, const int & newX, co
 		else
 		{
 			p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
-			p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
+			if (showOnlyKnownInfo)
+				p[playerNum].playerBoard[newX][newY].drawUnknownPiece(p[playerNum].color, newX, newY);
+			else
+				p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
 		}
 	}
 	else if (showMode == playerNum)
@@ -352,7 +355,10 @@ void TheGame::drawPiece(const int & oldX, const int & oldY, const int & newX, co
 		else
 		{
 			p[playerNum].playerBoard[oldX][oldY].removePiece(oldX, oldY);
-			p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
+			if (showOnlyKnownInfo)
+				p[playerNum].playerBoard[newX][newY].drawUnknownPiece(p[playerNum].color, newX, newY);
+			else
+				p[playerNum].playerBoard[newX][newY].drawPiece(p[playerNum].color, newX, newY);
 		}
 	}
 	else {
@@ -479,6 +485,7 @@ void TheGame::drawBoardLines()
 	{
 		for (int i = 1; i < 11; i++)
 		{
+			gameBoard[i][j].removePiece(i, j);
 			if (j == 1)
 			{
 				gotoxy(i * 3 + 3, 4);
