@@ -15,7 +15,7 @@ void TheGame::init()
 
 	for (int i = 0; i < this->numOfPlayers; i++)
 	{
-		goodToInitBoard = true;
+		//goodToInitBoard = true;
 		p[i].readFromFile();
 
 		if (p[i].status == noReason) // NO Bad Positioning input file for player <player> - line <bad line number>
@@ -474,7 +474,8 @@ void TheGame::createOutputFile()
 		outfile.close();
 	}
 	else {
-		cout << "error";
+		gotoxy(1, 28);
+		cout << "can't Create ouput file";
 
 	}
 }

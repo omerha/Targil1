@@ -20,5 +20,6 @@ enum Error
 	unKnownPieceForJoker=15,
 	jokerNotInRange=16,
 	bombCantMove=17,
-	flagCantMove=18
+	flagCantMove=18,
+	errorFile=19
 };

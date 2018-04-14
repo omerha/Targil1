@@ -38,10 +38,10 @@ string* Player::parseLine(string line, int& size,int lineNum,Error error)
 			if (getInput[i].length() >= 2)
 			{
 				if (getInput[i].length() > 2 || (!(isdigit(getInput[i][0]) && isdigit(getInput[i][1])) && getInput[i][0] != 'J'))
-					setPlayerStatus(badPosition, error, lineNum);
+					setPlayerStatus(badPosition, wrongFormatRowInputFile, lineNum);
 			}
 			else if (getInput[i].empty())
-				setPlayerStatus(badPosition, error, lineNum);
+				setPlayerStatus(badPosition, wrongFormatRowInputFile, lineNum);
 			out[i] = getInput[i];
 		}
 		size = inputIndex;
@@ -70,8 +70,7 @@ void Player::putMovesFileInStringArr()
 		}
 		else
 		{
-			//cout << "error in moves file";
-			//TODO: add relevant error;
+			//setPlayerStatus(badMoves, errorFile, 0);
 		}
 	}
 	numOfMoves = numOfRows;
@@ -308,7 +307,7 @@ void Player::readFromFile()
 					}
 					else // //If the piece type isn't one of the pieces in the game
 					{
-						setPlayerStatus(badPosition, unKnownPiece, numOfRows);
+						//setPlayerStatus(badPosition, unKnownPiece, numOfRows);
 						return;
 					}
 
@@ -482,6 +481,12 @@ void Player::printError()
 		break;
 	case 18:
 		cout << "The flag in line:" << errorLine << " in the move file can't move\n";
+		break;
+	case 19:
+		if (status == badPosition)
+			cout << "There is an error opening the input file \n";
+		else
+			cout << "There is an error opening the move file \n";
 		break;
 	default:
 		if (status == allEaten)
