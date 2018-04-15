@@ -12,6 +12,8 @@ void Piece::removePiece(int xL, int yL)
 	setTextRemoveColor(BLACK);
 	gotoxy(xL * 3+3, yL * 2+3);
 	cout << " ";
+	revealJoker = false;
+	revealType = false;
 	setTextRemoveColor(WHITE);
 }
 
@@ -21,7 +23,7 @@ void Piece::drawPiece(Color color, int xL, int yL)
 	{
 		if (revealJoker)
 			setTextbBackground(color);
-		revealJoker = true;
+	revealJoker = true;
 	}
 	else
 		setTextColor(color);

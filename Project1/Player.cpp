@@ -19,7 +19,7 @@ void Player::checkForCorrectType(char type, int numOfRow)
 		setPlayerStatus(badPosition, unKnownPiece, numOfRow);
 	}
 }
-string* Player::parseLine(string line, int& size,int lineNum,Error error)
+string* Player::parseLine(string line, int& size,int lineNum,Error error)//Gets a line and parsing it as asked.
 {
 	string tmpRead, temp;
 	istringstream tempCh(line);
@@ -50,7 +50,7 @@ string* Player::parseLine(string line, int& size,int lineNum,Error error)
 	else
 		return nullptr;
 }
-void Player::putMovesFileInStringArr()
+void Player::putMovesFileInStringArr()//Puts all moves into array and counts them.
 {
 	bool illegalFile = false;
 	int numOfRows = 0;
@@ -58,7 +58,6 @@ void Player::putMovesFileInStringArr()
 	ifstream inFile(this->movesFile);
 	if (inFile.fail())
 	{
-		//need to check if its legal to not having moves file.
 		illegalFile = true;
 	}
 	while (!inFile.eof() && !illegalFile)
@@ -76,7 +75,7 @@ void Player::putMovesFileInStringArr()
 	numOfMoves = numOfRows;
 }
 bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLocation, int& oldYLocation, int& jokerXLocation, int& jokerYLocation, char& newJokerType)
-{
+{//This functino reads the move files and check for erros.
 	int xJoker, yJoker;
 	string* currInput = nullptr;
 	int numOfIndex = 0;
@@ -149,7 +148,7 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 						return false;
 					}
 					nJokerType = currInput[7][0];
-					if (!(checkXYInRange(xJoker, 'X') && checkXYInRange(yJoker, 'Y')))//Something is wrong with joker xy. //Guy- this mean joker not in range?
+					if (!(checkXYInRange(xJoker, 'X') && checkXYInRange(yJoker, 'Y')))//Something is wrong with joker xy coordinates
 					{
 						setPlayerStatus(badMoves, jokerNotInRange, moveNum+1);
 						return false;
@@ -163,13 +162,10 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 						}
 						else
 						{
-						//	playerBoard[newX][newY].setPieceJoker(true);
-						//	playerBoard[xJoker][yJoker].setPieceType(nJokerType);
 							jokerXLocation = xJoker;
 							jokerYLocation = yJoker;
 							newJokerType = nJokerType;
 						}
-
 					}
 					else
 					{
@@ -202,14 +198,14 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 }
 
 
-void Player::setPlayerStatus(Reason reason, Error theError, int line) 
+void Player::setPlayerStatus(Reason reason, Error theError, int line) //If error was found in one of the files this functino changes the relevant player status.
 {
 	status = reason;
 	error = theError;
 	errorLine = line;
 }
 
-void Player::readFromFile()
+void Player::readFromFile()//This function reads the first file and checks for errors in
 {
 	bool illegalFile = false;
 	int numOfRows = 0, inputIndex = 0;
@@ -306,12 +302,11 @@ void Player::readFromFile()
 					}
 					else // //If the piece type isn't one of the pieces in the game
 					{
-						//setPlayerStatus(badPosition, unKnownPiece, numOfRows);
 						return;
 					}
 
 				}
-				if ((inputIndex == 0) && (numOfRows == 1)) /////////////////Not working!
+				if ((inputIndex == 0) && (numOfRows == 1)) 
 				{
 					setPlayerStatus(badPosition, emptyFile, numOfRows); //File is empty 
 					return;
@@ -405,7 +400,6 @@ bool Player::checkXYInRange(int num,char cord)
 	{
 		if (num < 1 || num>10) // X coordinate isn't inrange
 		{
-			//status = badPosition;
 			return false;
 		}
 	}
@@ -413,7 +407,6 @@ bool Player::checkXYInRange(int num,char cord)
 	{
 		if (num < 1 || num>10) // X coordinate isn't inrange
 		{
-			//status = badPosition;
 			return false;
 		}
 	}

@@ -1,7 +1,7 @@
 #include "TheGame.h"
 
 
-void TheGame::init()
+void TheGame::init()//First function.
 {
 	p[0].setColor(YELLOW);
 	p[1].setColor(RED);
@@ -131,7 +131,7 @@ int TheGame::pieceFight(int i, int j)
 	}
 }
 
-void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)
+void TheGame::setFightResult(int fightResult, int xLoc, int yLoc)//Recevies fight result and updates all board accordindly.
 {
 	if (fightResult == 0) //It means that both players lost
 	{
@@ -276,11 +276,11 @@ void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, co
 	else
 	{
 		gameBoard[newX][newY].setPieceType(gameBoard[oldX][oldY].getPieceType());
-		gameBoard[newX][newY].setPieceJoker(gameBoard[oldX][oldY].getPieceJoker());
+		gameBoard[newX][newY].setPieceJoker(p[playerNum].playerBoard[oldX][oldY].getPieceJoker());
 	}
 	gameBoard[oldX][oldY].setPieceType('-');
 	gameBoard[oldX][oldY].setPieceJoker(false);
-	if (newJokerType != '-')
+	if (newJokerType != '-' || p[playerNum].playerBoard[oldX][oldY].getPieceJoker())
 	{
 		if (p[playerNum].playerBoard[oldX][oldY].getPieceJoker())
 		{
@@ -300,6 +300,8 @@ void TheGame::movePiece(const int & oldX, const int & oldY, const int & newX, co
 			//p[playerNum].playerBoard[jokerX][jokerY].setPieceJoker(true);
 			p[playerNum].playerBoard[jokerX][jokerY].setPieceType(newJokerType);
 			gameBoard[jokerX][jokerY].setPieceType(newJokerType);
+			if (showMode == SHOWALL_MODE || showMode == playerNum && !showOnlyKnownInfo)
+				p[playerNum].playerBoard[jokerX][jokerY].drawPiece(p[playerNum].color, jokerX, jokerY);
 		}
 	}
 	if (showMode != QUIET_MODE)
