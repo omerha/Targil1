@@ -174,7 +174,6 @@ bool Player::move(int moveNum, int& newXLocation, int& newYLocation, int& oldXLo
 					else
 					{
 						setPlayerStatus(badMoves, notExistJoker, moveNum+1); //Error- not exit joker in this location
-						//movePlayerError(moveNum);
 						return false;
 					}
 				}
@@ -368,6 +367,9 @@ void Player::removePiece(int i, int j, char type)
 		case 'B':
 			counterPieces[B]--;
 			break;
+		case 'F':
+			counterPieces[F]--;
+			break;
 		}
 	}
 }
@@ -447,10 +449,10 @@ void Player::printError()
 		cout << "Too many rows inserted in the input file \n";
 		break;
 	case 7:
-		cout << "The format of row " << errorLine << " in the input file is invalid\n";
+		cout << "The format of line " << errorLine << " in the input file is invalid\n";
 		break;
 	case 8:
-		cout << "The format of row " << errorLine << " in the move file is invalid\n";
+		cout << "The format of line " << errorLine << " in the move file is invalid\n";
 		break;
 	case 9:
 		cout << "There is no piece in the place that inserted in line " << errorLine << " in the move file\n";
@@ -459,7 +461,7 @@ void Player::printError()
 		cout << "Joker does not exist in the place that inserted in line " << errorLine << " in the move file\n";
 		break;
 	case 11:
-		cout << "Joker has changed in row " << errorLine << " into a piece that didn't exist in the move file \n";
+		cout << "Joker has changed in line " << errorLine << " in the move file into a piece that didn't exist  \n";
 		break;
 	case 12:
 		cout << "The input file is empty\n";
@@ -490,7 +492,7 @@ void Player::printError()
 		break;
 	default:
 		if (status == allEaten)
-			cout << "All the pieces were eaten\n";
+			cout << "All the moving pieces were eaten\n";
 		else if (status == flagsCaptured)
 			cout << "All the flags were caught\n";
 		else if (status == moveFilesDone)
@@ -521,7 +523,7 @@ string Player::returnReason()
 		return "Bad Moves input file ";
 		break;
 	default:
-		return "No reason";
+		return "No reason ";
 		break;
 	}
 }

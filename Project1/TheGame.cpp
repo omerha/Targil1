@@ -45,11 +45,6 @@ void TheGame::initStartBoard()
 			{
 				
 				res = pieceFight(i, j);
-				//The printing is just to check whice piece win in the fight
-				/*
-				cout << "we are fighting in square: " << i << "*" << j << "\n";
-				cout << "the winner is: " << res << "\n";
-				*/
 				setFightResult(res, i, j);
 			}
 			else if (p[0].playerBoard[i][j].getPieceType() != '-')
@@ -197,7 +192,12 @@ void TheGame::checkForWinner()
 	{
 		if ((p[0].status != noReason) && (p[1].status != noReason))
 		{
-			winner = 0;
+			if ((p[0].status == flagsCaptured) && (p[1].status != flagsCaptured))
+				winner = 2;
+			else if ((p[1].status == flagsCaptured) && (p[0].status != flagsCaptured))
+				winner = 1;
+			else 
+				winner = 0;
 		}
 		if (p[0].status == noReason)
 		{
@@ -402,7 +402,9 @@ void TheGame::createOutputFile()
 		outfile << "Reason: " ;
 		if (winner == 1)
 		{
-			outfile << p[1].returnReason() << "for player 2 ";
+			outfile << p[1].returnReason();
+			if (p[1].status>2)
+				outfile  <<"for player 2 ";
 			if (p[1].errorLine!=0)
 			{
 				outfile << "line " << p[1].errorLine;
@@ -410,7 +412,9 @@ void TheGame::createOutputFile()
 		}
 		else if (winner == 2)
 		{
-			outfile << p[0].returnReason() << "for player 1 ";
+			outfile << p[0].returnReason();
+			if (p[0].status>2)
+				outfile << "for player 1 ";
 			if (p[0].errorLine!=0)
 			{
 				outfile << "line " << p[0].errorLine;
